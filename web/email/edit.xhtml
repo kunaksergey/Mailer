@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: superkostya
+  Date: 03.09.17
+  Time: 17:05
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+    <title>Edit email</title>
+</h:head>
+
+<h:body>
+    <h:form>
+        <h:panelGrid columns="2" cellpadding="5">
+            <p:outputLabel for="email" value="E-mail:" />
+            <p:inputText id="email" value="#{mailAddressJsfController.mailAddress.emailAddress}"/>
+
+            <p:commandButton value="Submit" action="#{mailAddressJsfController.save()}"/>
+            <p:commandButton value="Reset" type="reset"/>
+        </h:panelGrid>
+    </h:form>
+</h:body>
+
+</html>

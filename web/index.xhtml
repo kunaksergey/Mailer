@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: superkostya
+  Date: 02.09.17
+  Time: 13:55
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Title</title>
+</h:head>
+
+<h:body>
+    <ui:composition template="/template/menu.xhtml">
+        <ui:define name="content">
+
+            <h:form>
+                <p:growl id="messagesEvent" showDetail="true"/>
+
+                <h:panelGrid columnClasses="value">
+                    <h3 style="margin-top: 0">Editable Schedule</h3>
+                    <p:schedule id="schedule" value="#{scheduleView.eventModel}" widgetVar="myschedule"
+                                timeZone="GMT+2">
+
+                        <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" update="eventDetails"
+                                oncomplete="PF('eventDialog').show();"/>
+                        <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails"
+                                oncomplete="PF('eventDialog').show();"/>
+                        <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="messagesEvent"/>
+                        <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="messagesEvent"/>
+
+                    </p:schedule>
+                </h:panelGrid>
+
+
+                <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+                    <p:panelGrid id="eventDetails" columns="2">
+                        <p:outputLabel for="title" value="Titles:"/>
+                        <p:inputText id="title" value="#{scheduleView.event.title}" required="true"/>
+
+
+                        <p:outputLabel for="task" value="Task: "/>
+                        <p:selectOneMenu id="task" value="#{scheduleView.event.task}" converter="#{taskConverter}" panelStyle="width:180px"
+                                         required="true" effect="fade" var="t" style="width:160px" filter="true" filterMatchMode="startsWith">
+                            <f:selectItems value="#{scheduleView.tasks}" var="t" itemLabel="#{t.name}"
+                                           itemValue="#{t}"/>
+
+                            <p:column>
+                                <h:outputText value="#{t.name}" />
+                            </p:column>
+                        </p:selectOneMenu>
+
+
+
+
+                        <p:outputLabel for="typeEvent" value="Type:"/>
+                        <p:selectOneRadio id="typeEvent" value="#{scheduleView.event.typeEvent}">
+                            <f:selectItem itemLabel="ONCE" itemValue="ONCE"/>
+                            <f:selectItem itemLabel="RANGE" itemValue="RANGE"/>
+                            <f:ajax render="endRangeLabel endRangeDate"></f:ajax>
+                        </p:selectOneRadio>
+
+                        <p:outputLabel for="from" value="From:"/>
+                        <p:calendar id="from" value="#{scheduleView.event.startDate}" timeZone="GMT+2"
+                                    pattern="dd/MM/yyyy HH:mm"/>
+
+                        <p:outputPanel id="endRangeLabel">
+                            <p:outputLabel for="to" value="To:" rendered="#{scheduleView.event.typeEvent eq 'RANGE'}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="endRangeDate">
+                            <p:calendar id="to" value="#{scheduleView.event.endDate}" timeZone="GMT+2"
+                                        pattern="dd/MM/yyyy" rendered="#{scheduleView.event.typeEvent eq 'RANGE'}"/>
+                        </p:outputPanel>
+
+                    </p:panelGrid>
+                    <p:commandButton type="reset" value="Reset"/>
+                    <p:commandButton id="addButton" value="Save" actionListener="#{scheduleView.addEvent}"
+                                     oncomplete="PF('myschedule').update();PF('eventDialog').hide();"
+                                     update="messagesEvent"/>
+
+
+                </p:dialog>
+            </h:form>
+
+            <style type="text/css">
+                .value {
+                    width: 1000px;
+                }
+            </style>
+
+        </ui:define>
+    </ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: superkostya
+  Date: 04.09.17
+  Time: 12:53
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Title</title>
+</h:head>
+
+<h:body>
+    <h:form>
+        <p:growl id="messages"/>
+
+        <p:menubar>
+            <p:menuitem value="Main" url="/index.xhtml" icon="ui-icon-arrowreturnthick-1-w" />
+
+            <p:submenu label="Messages" icon="ui-icon-pencil">
+                <p:menuitem value="New message" url="/message/edit.xhtml" icon="ui-icon-arrowreturnthick-1-w" />
+                <p:menuitem value="List messages" url="/message/list.xhtml" icon="ui-icon-arrowreturnthick-1-e" />
+            </p:submenu>
+
+            <p:submenu label="MailBox" icon="ui-icon-pencil">
+                <p:menuitem value="New" url="/email/edit.xhtml" icon="ui-icon-arrowreturnthick-1-w" />
+                <p:menuitem value="List" url="/email/list.xhtml" icon="ui-icon-arrowreturnthick-1-e" />
+                <p:submenu label="Group mail" icon="ui-icon-contact">
+                    <p:menuitem value="New" url="/email/group/edit.xhtml" />
+                    <p:menuitem value="List" url="/email/group/list.xhtml" />
+                </p:submenu>
+            </p:submenu>
+
+            <p:submenu label="MailServer" icon="ui-icon-pencil">
+                <p:menuitem value="New" url="/server/edit.xhtml" icon="ui-icon-arrowreturnthick-1-w" />
+                <p:menuitem value="List" url="/server/list.xhtml" icon="ui-icon-arrowreturnthick-1-e" />
+                <p:submenu label="Group server" icon="ui-icon-contact">
+                    <p:menuitem value="New" url="/server/group/edit.xhtml" />
+                    <p:menuitem value="List" url="/server/group/list.xhtml" />
+                </p:submenu>
+            </p:submenu>
+
+            <p:menuitem value="Quit" url="/logout" icon="ui-icon-close" />
+
+            <f:facet name="options">
+                <p:inputText style="margin-right:10px" placeholder="Search"/>
+                <p:commandButton type="button" value="Logout" icon="ui-icon-extlink" />
+            </f:facet>
+        </p:menubar>
+    </h:form>
+
+    <div class="content">
+        <ui:insert name="content">
+
+        </ui:insert>
+    </div>
+
+</h:body>
+
+</html>

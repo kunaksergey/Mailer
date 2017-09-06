@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: superkostya
+  Date: 03.09.17
+  Time: 17:06
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+    <title>List messages</title>
+</h:head>
+
+<h:body>
+    <ui:composition template = "/template/menu.xhtml">
+        <ui:define name="content">
+            <h:form id="form">
+                <p:dataTable id="singleDT" var="message" value="#{messageJsfController.mailAddressSet()}" selectionMode="single" selection="#{messageJsfController.selectedMessage}" rowKey="#{message.id}"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Message List
+                    </f:facet>
+
+                    <p:column headerText="Title" >
+                        <h:outputText value="#{message.title}" />
+                    </p:column>
+                 </p:dataTable>
+
+                <p:contextMenu for="singleDT">
+                    <p:menuitem value="View" update="messageDetail" icon="ui-icon-search" oncomplete="PF('messageDialog').show()"/>
+                    <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{messageJsfController.edit()}"/>
+                </p:contextMenu>
+
+                <p:dialog header="Message Info" widgetVar="messageDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="messageDetail" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty messageJsfController.selectedMessage}" columnClasses="label,value">
+                            <h:outputText value="Title:" />
+                            <h:outputText value="#{messageJsfController.selectedMessage.title}" />
+
+                            <h:outputText value="Year" />
+                            <h:outputText value="#{messageJsfController.selectedMessage.text}" />
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</h:body>
+
+</html>

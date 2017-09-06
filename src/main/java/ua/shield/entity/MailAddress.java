@@ -1,0 +1,81 @@
+package ua.shield.entity;
+
+import javax.persistence.*;
+import java.util.Set;
+
+/**
+ * Created by sa on 01.09.17.
+ */
+@Entity
+@Table(name="mail_address")
+public class MailAddress implements IOwnedId{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="ID")
+    private Integer id;
+
+    @Column(name="email")
+    private String emailAddress;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "USER_ID")
+    private User owner;
+
+    @ManyToMany
+    @JoinTable (name = "group_mail_address_detail",
+            joinColumns = @JoinColumn (name = "EMAIL_ID"),
+            inverseJoinColumns =@JoinColumn(name = "GROUP_ID"))
+    private Set<GroupMailAddress> groupMailAddressSet;
+
+
+    public MailAddress() {
+    }
+
+    public MailAddress(String emailAddress, User owner) {
+        this.emailAddress = emailAddress;
+        this.owner = owner;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public Set<GroupMailAddress> getGroupMailAddressSet() {
+        return groupMailAddressSet;
+    }
+
+    public void setGroupMailAddressSet(Set<GroupMailAddress> groupMailAddressSet) {
+        this.groupMailAddressSet = groupMailAddressSet;
+    }
+
+    @Override
+    public String toString() {
+        return "MailAddress{" +
+                "emailAddress='" + emailAddress + '\'' +
+                ", owner=" + owner +
+                '}';
+    }
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: superkostya
+  Date: 03.09.17
+  Time: 17:05
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+    <title>List Servers</title>
+</h:head>
+
+<h:body>
+    <ui:composition template = "/template/menu.xhtml">
+        <ui:define name="content">
+            <h:form id="form">
+                <p:dataTable id="singleDT" var="server" value="#{mailServerJsfController.mailServerSet()}" selectionMode="single" selection="#{mailServerJsfController.selectedMailServer}" rowKey="#{server.id}">
+                    <f:facet name="header">
+                        Server List
+                    </f:facet>
+
+                    <p:column headerText="Title" >
+                        <h:outputText value="#{server.host}" />
+                    </p:column>
+                </p:dataTable>
+
+                <p:contextMenu for="singleDT">
+                    <p:menuitem value="View" update="serverDetail" icon="ui-icon-search" oncomplete="PF('serverDialog').show()"/>
+                    <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{mailServerJsfController.edit()}"/>
+                </p:contextMenu>
+
+                <p:dialog header="Server Info" widgetVar="serverDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="serverDetail" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty mailServerJsfController.selectedMailServer}" columnClasses="label,value">
+                            <h:outputText value="Host:" />
+                            <h:outputText value="#{mailServerJsfController.selectedMailServer.host}" />
+
+                            <h:outputText value="Post" />
+                            <h:outputText value="#{mailServerJsfController.selectedMailServer.port}" />
+
+                            <h:outputText value="Sender" />
+                            <h:outputText value="#{mailServerJsfController.selectedMailServer.sender}" />
+
+                            <h:outputText value="Protocol" />
+                            <h:outputText value="#{mailServerJsfController.selectedMailServer.protocol}" />
+
+                            <h:outputText value="Smtp auth" />
+                            <h:outputText value="#{mailServerJsfController.selectedMailServer.smtpAuth}" />
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</h:body>
+
+</html>
