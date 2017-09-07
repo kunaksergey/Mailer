@@ -10,14 +10,58 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
     <title>Group server list</title>
 </h:head>
 
 <h:body>
-    Group server list
+    <ui:composition template = "/template/menu.xhtml">
+        <ui:define name="content">
+            <p:commandButton value="New" id="new"  actionListener="#{groupMailServerJsfController.create}" styleClass="ui-priority-primary" />
+
+            <h:form id="form">
+                <p:dataTable id="singleDT" var="serverGroup" value="#{groupMailServerJsfController.groupMailServerSet()}" selectionMode="single" selection="#{groupMailServerJsfController.selectedGroupMailServer}" rowKey="#{serverGroup.id}"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15">
+                    <f:facet name="header">
+                        Server group List
+                    </f:facet>
+                    <p:column headerText="Title" >
+                        <h:outputText value="#{serverGroup.title}" />
+                    </p:column>
+                </p:dataTable>
+
+
+                <p:contextMenu for="singleDT">
+                    <p:menuitem value="View" icon="ui-icon-search" update="serverDetail"  oncomplete="PF('serverDialog').show()"/>
+                    <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{groupMailServerJsfController.edit()}"/>
+                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{groupMailServerJsfController.delete()}">
+                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                    </p:menuitem>
+                </p:contextMenu>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+                <p:dialog header="Server group info" widgetVar="serverDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="serverDetail" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty groupMailServerJsfController.selectedGroupMailServer}" columnClasses="label,value">
+                            <h:outputText value="Server group:" />
+                            <h:outputText value="#{groupMailServerJsfController.selectedGroupMailServer.title}" />
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
 </h:body>
 
 </html>

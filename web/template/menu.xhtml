@@ -26,25 +26,30 @@
         <p:menubar>
             <p:menuitem value="Main" url="/index.xhtml" icon="ui-icon-arrowreturnthick-1-w" />
 
+            <p:submenu label="Tasks" icon="ui-icon-pencil">
+                <p:menuitem value="New task"  icon="ui-icon-arrowreturnthick-1-w"  actionListener="#{taskJsfController.create}"/>
+                <p:menuitem value="List task" url="/task/list.xhtml" icon="ui-icon-arrowreturnthick-1-e" />
+            </p:submenu>
+
             <p:submenu label="Messages" icon="ui-icon-pencil">
-                <p:menuitem value="New message" url="/message/edit.xhtml" icon="ui-icon-arrowreturnthick-1-w" />
+                <p:menuitem value="New message" icon="ui-icon-arrowreturnthick-1-w" actionListener="#{messageJsfController.create}" />
                 <p:menuitem value="List messages" url="/message/list.xhtml" icon="ui-icon-arrowreturnthick-1-e" />
             </p:submenu>
 
             <p:submenu label="MailBox" icon="ui-icon-pencil">
-                <p:menuitem value="New" url="/email/edit.xhtml" icon="ui-icon-arrowreturnthick-1-w" />
+                <p:menuitem value="New"  icon="ui-icon-arrowreturnthick-1-w" actionListener="#{mailAddressJsfController.create}"/>
                 <p:menuitem value="List" url="/email/list.xhtml" icon="ui-icon-arrowreturnthick-1-e" />
                 <p:submenu label="Group mail" icon="ui-icon-contact">
-                    <p:menuitem value="New" url="/email/group/edit.xhtml" />
+                    <p:menuitem value="New" actionListener="#{groupMailAddressJsfController.create}" />
                     <p:menuitem value="List" url="/email/group/list.xhtml" />
                 </p:submenu>
             </p:submenu>
 
             <p:submenu label="MailServer" icon="ui-icon-pencil">
-                <p:menuitem value="New" url="/server/edit.xhtml" icon="ui-icon-arrowreturnthick-1-w" />
+                <p:menuitem value="New"  icon="ui-icon-arrowreturnthick-1-w" actionListener="#{mailServerJsfController.create}"/>
                 <p:menuitem value="List" url="/server/list.xhtml" icon="ui-icon-arrowreturnthick-1-e" />
                 <p:submenu label="Group server" icon="ui-icon-contact">
-                    <p:menuitem value="New" url="/server/group/edit.xhtml" />
+                    <p:menuitem value="New" actionListener="#{groupMailServerJsfController.create}" />
                     <p:menuitem value="List" url="/server/group/list.xhtml" />
                 </p:submenu>
             </p:submenu>

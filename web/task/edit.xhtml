@@ -7,10 +7,37 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
-    <title>Title</title>
+    <title>Task edit</title>
 </h:head>
 
 <h:body>
+    <h:form>
+        <p:growl id="growl" showDetail="true" sticky="true" />
+        <h:panelGrid columns="2" cellpadding="5">
+            <p:outputLabel for="title" value="Title:" />
+            <p:inputText id="title" value="#{taskJsfController.task.title}"/>
 
+            <p:outputLabel for="message" value="Message:" />
+            <p:selectOneMenu id="message" value="#{taskJsfController.task.message}" converter="#{messageConverter}" filter="true" filterMatchMode="startsWith">
+                <f:selectItems value="#{taskJsfController.messageSet}" var="message" itemLabel="#{message.title}" itemValue="#{message}"  />
+           </p:selectOneMenu>
+
+
+            <p:outputLabel for="groupMailAddress" value="Email group:" />
+            <p:selectOneMenu id="groupMailAddress" value="#{taskJsfController.task.groupMailAddress}" converter="#{groupMailAddressConverter}" filter="true" filterMatchMode="startsWith">
+                <f:selectItems value="#{taskJsfController.groupMailAddressSet}" var="groupMailAddress" itemLabel="#{groupMailAddress.title}" itemValue="#{groupMailAddress}"  />
+            </p:selectOneMenu>
+
+
+            <p:outputLabel for="groupMailServer" value="Server group:" />
+            <p:selectOneMenu id="groupMailServer" value="#{taskJsfController.task.groupMailServer}" converter="#{groupMailServerConverter}" filter="true" filterMatchMode="startsWith">
+                <f:selectItems value="#{taskJsfController.groupMailServerSet}" var="groupMailServer" itemLabel="#{groupMailServer.title}" itemValue="#{groupMailServer}"  />
+            </p:selectOneMenu>
+
+
+            <p:commandButton value="Submit" action="#{taskJsfController.save}" update="growl"/>
+            <p:commandButton value="Reset" type="reset"/>
+        </h:panelGrid>
+    </h:form>
 </h:body>
 </html>

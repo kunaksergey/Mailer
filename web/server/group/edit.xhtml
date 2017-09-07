@@ -10,14 +10,54 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
-    <title>Group server edit list</title>
+    <title>Server group edit </title>
 </h:head>
 
 <h:body>
-    Group server edit list
+    <h:form>
+        <p:panelGrid columns="1" cellpadding="3">
+            <h:panelGroup>
+                <p:outputLabel for="group" value="Server group:"/>
+                <p:inputText id="group" value="#{groupMailServerJsfController.gropMailServer.title}"
+                             required="true"/>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <p:pickList id="emailPickList" value="#{groupMailServerJsfController.dualListModel}" var="server" effect="bounce"
+                            itemValue="#{server}" itemLabel="#{server.host}" showSourceControls="true"
+                            showTargetControls="true" showCheckbox="true" responsive="true"
+                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains"
+                            converter="#{serverConverter}">
+
+                    <f:facet name="sourceCaption">Available</f:facet>
+                    <f:facet name="targetCaption">Starting</f:facet>
+
+                    <p:ajax event="transfer" listener="#{groupMailServerJsfController.onTransfer}"/>
+                    <p:ajax event="select" listener="#{groupMailServerJsfController.onSelect}"/>
+                    <p:ajax event="unselect" listener="#{groupMailServerJsfController.onUnselect}"/>
+                    <p:ajax event="reorder" listener="#{groupMailServerJsfController.onReorder}"/>
+
+                    <p:column style="width:10%">
+                        <h:outputText styleClass="ui-theme ui-theme-#{server.host}"/>
+                    </p:column>
+
+                    <p:column style="width:90%;">
+                        <h:outputText value="#{server.host}"/>
+                    </p:column>
+                </p:pickList>
+            </h:panelGroup>
+            <h:panelGroup>
+                <p:commandButton value="Submit" action="#{groupMailServerJsfController.save()}"/>
+                <p:commandButton value="Reset" type="reset"/>
+            </h:panelGroup>
+
+        </p:panelGrid>
+    </h:form>
 </h:body>
 
 </html>

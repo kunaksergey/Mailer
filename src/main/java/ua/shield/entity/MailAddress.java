@@ -71,6 +71,23 @@ public class MailAddress implements IOwnedId{
         this.groupMailAddressSet = groupMailAddressSet;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MailAddress that = (MailAddress) o;
+
+        return emailAddress != null ? emailAddress.equals(that.emailAddress) : that.emailAddress == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return emailAddress != null ? emailAddress.hashCode() : 0;
+    }
+
     @Override
     public String toString() {
         return "MailAddress{" +
@@ -78,4 +95,6 @@ public class MailAddress implements IOwnedId{
                 ", owner=" + owner +
                 '}';
     }
+
+
 }

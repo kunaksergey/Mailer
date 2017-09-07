@@ -1,9 +1,9 @@
 package ua.shield.jsf.converter;
 
 import ua.shield.entity.MailAddress;
+import ua.shield.entity.MailServer;
 import ua.shield.service.IService;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -13,20 +13,19 @@ import javax.faces.bean.RequestScoped;
  */
 @ManagedBean
 @RequestScoped
-public class EmailConverter extends FaceConverter<MailAddress> {
+public class ServerConverter extends FaceConverter<MailServer> {
 
-    @ManagedProperty("#{mailAddressService}")
-    IService<MailAddress> service;
+    @ManagedProperty("#{mailServerService}")
+    IService<MailServer> service;
+
 
     @Override
-    public IService<MailAddress> getService() {
+    public IService<MailServer> getService() {
         return service;
     }
 
     @Override
-    public void setService(IService<MailAddress> service) {
-        this.service = service;
+    public void setService(IService<MailServer> service) {
+        this.service=service;
     }
-
-
 }

@@ -4,6 +4,7 @@ import ua.shield.entity.Task;
 import ua.shield.helper.FrontMessage;
 import ua.shield.service.IService;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -19,14 +20,15 @@ import javax.faces.context.FacesContext;
 public class TaskConverter extends FaceConverter<Task> {
 
     @ManagedProperty("#{taskService}")
-    IService service;
+    IService<Task> service;
 
     @Override
-    public IService getService() {
+    public IService<Task> getService() {
         return service;
     }
 
-    public void setService(IService service) {
+    @Override
+    public void setService(IService<Task> service) {
         this.service = service;
     }
 }

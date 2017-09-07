@@ -15,13 +15,14 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
-    <title>List emails</title>
+    <title>List dualListModel</title>
 </h:head>
 
 
 <h:body>
     <ui:composition template = "/template/menu.xhtml">
         <ui:define name="content">
+            <p:commandButton value="New" id="new"  actionListener="#{mailAddressJsfController.create}" styleClass="ui-priority-primary" />
             <h:form id="form">
                 <p:dataTable id="singleDT" var="email" value="#{mailAddressJsfController.mailAddressSet()}" selectionMode="single" selection="#{mailAddressJsfController.selectedMailAddress}" rowKey="#{email.id}"
                              paginator="true"
@@ -40,8 +41,15 @@
                 <p:contextMenu for="singleDT">
                     <p:menuitem value="View" icon="ui-icon-search" update="emailDetail"  oncomplete="PF('emailDialog').show()"/>
                     <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{mailAddressJsfController.edit()}"/>
-                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{mailAddressJsfController.delete()}"/>
+                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{mailAddressJsfController.delete()}">
+                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                    </p:menuitem>
                 </p:contextMenu>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
 
                 <p:dialog header="E-mail Info" widgetVar="emailDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                     <p:outputPanel id="emailDetail" style="text-align:center;">

@@ -23,6 +23,8 @@
 <h:body>
     <ui:composition template = "/template/menu.xhtml">
         <ui:define name="content">
+            <p:commandButton value="New" id="new"  actionListener="#{groupMailAddressJsfController.create}" styleClass="ui-priority-primary" />
+
             <h:form id="form">
                 <p:dataTable id="singleDT" var="emailGroup" value="#{groupMailAddressJsfController.groupMailAddressSet()}" selectionMode="single" selection="#{groupMailAddressJsfController.selectedGroupMailAddress}" rowKey="#{emailGroup.id}"
                              paginator="true"
@@ -32,7 +34,7 @@
                         E-mail group List
                     </f:facet>
                     <p:column headerText="Title" >
-                        <h:outputText value="#{emailGroup.name}" />
+                        <h:outputText value="#{emailGroup.title}" />
                     </p:column>
                </p:dataTable>
 
@@ -40,14 +42,21 @@
                 <p:contextMenu for="singleDT">
                     <p:menuitem value="View" icon="ui-icon-search" update="emailDetail"  oncomplete="PF('emailDialog').show()"/>
                     <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{groupMailAddressJsfController.edit()}"/>
-                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{groupMailAddressJsfController.delete()}"/>
+                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{groupMailAddressJsfController.delete()}">
+                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                    </p:menuitem>
                 </p:contextMenu>
 
-                <p:dialog header="E-mail Info" widgetVar="emailDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+
+                <p:dialog header="E-mail group info" widgetVar="emailDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                     <p:outputPanel id="emailDetail" style="text-align:center;">
                         <p:panelGrid  columns="2" rendered="#{not empty groupMailAddressJsfController.selectedGroupMailAddress}" columnClasses="label,value">
                             <h:outputText value="E-mail group:" />
-                            <h:outputText value="#{roupMailAddressJsfController.selectedGroupMailAddress.name}" />
+                            <h:outputText value="#{groupMailAddressJsfController.selectedGroupMailAddress.title}" />
                         </p:panelGrid>
                     </p:outputPanel>
                 </p:dialog>

@@ -11,7 +11,6 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
 
@@ -21,34 +20,43 @@
 
 <h:body>
     <h:form>
-        <h:panelGrid columns="2" cellpadding="5">
-            <p:outputLabel for="group" value="E-mail group:" />
-            <p:inputText id="group" value="#{groupMailAddressJsfController.mailGroupAddress.name}"/>
+        <p:panelGrid columns="1" cellpadding="3">
+            <h:panelGroup>
+                <p:outputLabel for="group" value="E-mail group:"/>
+                <p:inputText id="group" value="#{groupMailAddressJsfController.groupMailAddress.title}"
+                             required="true"/>
+            </h:panelGroup>
 
-            <p:pickList id="emailPickList" value="#{groupMailAddressJsfController.emails}" var="email" effect="bounce"
-                        itemValue="#{email}" itemLabel="#{email.emailAddress}" showSourceControls="true" showTargetControls="true" showCheckbox="true" responsive="true"
-                        showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="#{emailConverter}">
+            <h:panelGroup>
+            <p:pickList id="emailPickList" value="#{groupMailAddressJsfController.dualListModel}" var="email" effect="bounce"
+                        itemValue="#{email}" itemLabel="#{email.emailAddress}" showSourceControls="true"
+                        showTargetControls="true" showCheckbox="true" responsive="true"
+                        showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains"
+                        converter="#{emailConverter}">
 
                 <f:facet name="sourceCaption">Available</f:facet>
                 <f:facet name="targetCaption">Starting</f:facet>
 
-                <p:ajax event="transfer" listener="#{groupMailAddressJsfController.onTransfer}"  />
-                <p:ajax event="select" listener="#{groupMailAddressJsfController.onSelect}" />
-                <p:ajax event="unselect" listener="#{groupMailAddressJsfController.onUnselect}"  />
-                <p:ajax event="reorder" listener="#{groupMailAddressJsfController.onReorder}"  />
+                <p:ajax event="transfer" listener="#{groupMailAddressJsfController.onTransfer}"/>
+                <p:ajax event="select" listener="#{groupMailAddressJsfController.onSelect}"/>
+                <p:ajax event="unselect" listener="#{groupMailAddressJsfController.onUnselect}"/>
+                <p:ajax event="reorder" listener="#{groupMailAddressJsfController.onReorder}"/>
 
                 <p:column style="width:10%">
-                    <h:outputText styleClass="ui-theme ui-theme-#{email.emailAddress}" />
+                    <h:outputText styleClass="ui-theme ui-theme-#{email.emailAddress}"/>
                 </p:column>
 
                 <p:column style="width:90%;">
-                    <h:outputText value="#{email.emailAddress}" />
+                    <h:outputText value="#{email.emailAddress}"/>
                 </p:column>
             </p:pickList>
+            </h:panelGroup>
+            <h:panelGroup>
+                <p:commandButton value="Submit" action="#{groupMailAddressJsfController.save()}"/>
+                <p:commandButton value="Reset" type="reset"/>
+            </h:panelGroup>
 
-            <p:commandButton value="Submit" action="#{groupMailAddressJsfController.save()}"/>
-            <p:commandButton value="Reset" type="reset"/>
-        </h:panelGrid>
+        </p:panelGrid>
     </h:form>
 </h:body>
 

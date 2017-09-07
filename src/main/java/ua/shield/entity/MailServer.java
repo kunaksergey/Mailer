@@ -10,12 +10,12 @@ import java.util.Set;
  */
 @Entity
 @Table(name="mail_server")
-public class MailServer {
+public class MailServer implements IOwnedId{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
-    private int id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "USER_ID")
@@ -69,11 +69,11 @@ public class MailServer {
         this.smtpAuth = smtpAuth;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -147,6 +147,27 @@ public class MailServer {
 
     public void setGroupMailServerSet(Set<GroupMailServer> groupMailServerSet) {
         this.groupMailServerSet = groupMailServerSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MailServer that = (MailServer) o;
+
+        if (port != that.port) return false;
+        if (host != null ? !host.equals(that.host) : that.host != null) return false;
+        return protocol == that.protocol;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = host != null ? host.hashCode() : 0;
+        result = 31 * result + port;
+        result = 31 * result + (protocol != null ? protocol.hashCode() : 0);
+        return result;
     }
 
     @Override

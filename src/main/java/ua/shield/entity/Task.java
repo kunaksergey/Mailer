@@ -18,8 +18,8 @@ public class Task implements IOwnedId {
     private Integer id;
 
     //наименования задания
-    @Column(name="name")
-    private String name;
+    @Column(name="title")
+    private String title;
 
     // рассписание задания
     @Transient
@@ -31,12 +31,14 @@ public class Task implements IOwnedId {
     private Message message;
 
     //количество запусков
-    @Column(name="count")
+    //@Column(name="count")
+    @Transient
     private int count;
 
     //статус задания 0-подготовлено,1-в работе, 2-закончено
-    @Column(name="status")
-    @Enumerated(EnumType.ORDINAL)
+    //@Column(name="status")
+    //@Enumerated(EnumType.ORDINAL)
+    @Transient
     TaskStatus status;
 
     //старт задания
@@ -52,11 +54,11 @@ public class Task implements IOwnedId {
     private User owner;
 
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GROUP_EMAIL_ID")
     private GroupMailAddress groupMailAddress;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GROUP_SERVER_ID")
     private GroupMailServer groupMailServer;
 
@@ -68,9 +70,9 @@ public class Task implements IOwnedId {
     public Task() {
     }
 
-    public Task(Integer id,String name) {
+    public Task(Integer id,String title) {
         this.id=id;
-        this.name = name;
+        this.title = title;
     }
 
     @Override
@@ -90,12 +92,12 @@ public class Task implements IOwnedId {
         this.startTime = startTime;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Schedule getSchedule() {
@@ -154,9 +156,12 @@ public class Task implements IOwnedId {
         this.groupMailServer = groupMailServer;
     }
 
+
     @Override
     public String toString() {
-        return name;
+        return title;
     }
+
+
 }
 

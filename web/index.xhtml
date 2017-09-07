@@ -50,11 +50,11 @@
                         <p:outputLabel for="task" value="Task: "/>
                         <p:selectOneMenu id="task" value="#{scheduleView.event.task}" converter="#{taskConverter}" panelStyle="width:180px"
                                          required="true" effect="fade" var="t" style="width:160px" filter="true" filterMatchMode="startsWith">
-                            <f:selectItems value="#{scheduleView.tasks}" var="t" itemLabel="#{t.name}"
+                            <f:selectItems value="#{scheduleView.tasks}" var="t" itemLabel="#{t.title}"
                                            itemValue="#{t}"/>
 
                             <p:column>
-                                <h:outputText value="#{t.name}" />
+                                <h:outputText value="#{t.title}" />
                             </p:column>
                         </p:selectOneMenu>
 

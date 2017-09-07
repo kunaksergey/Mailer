@@ -10,14 +10,44 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
-    <title>Title</title>
+    <title>Edit server</title>
 </h:head>
-Edit server
-<h:body>
 
+<h:body>
+    <h:form>
+        <h:panelGrid columns="2" cellpadding="5">
+            <p:outputLabel for="host" value="Host:" />
+            <p:inputText id="host" value="#{mailServerJsfController.mailServer.host}"/>
+
+            <p:outputLabel for="port" value="Port:" />
+            <p:inputText id="port" value="#{mailServerJsfController.mailServer.port}"/>
+
+            <p:outputLabel for="protocol" value="Protocol:" />
+            <p:selectOneMenu id="protocol" value="#{mailServerJsfController.mailServer.protocol}">
+                <f:selectItems value="#{mailServerJsfController.protocolList}" var="protocol" itemLabel="#{protocol}" itemValue="#{protocol}" />
+            </p:selectOneMenu>
+
+            <p:outputLabel for="sender" value="Sender:" />
+            <p:inputText id="sender" value="#{mailServerJsfController.mailServer.sender}"/>
+
+            <p:outputLabel for="username" value="Username:" />
+            <p:inputText id="username" value="#{mailServerJsfController.mailServer.username}"/>
+
+            <p:outputLabel for="password" value="Password:" />
+            <p:password id="password" value="#{mailServerJsfController.mailServer.password}"/>
+
+            <p:outputLabel for="smtpAuth" value="Smtp Auth:" />
+            <p:inputSwitch  id="smtpAuth" value="#{mailServerJsfController.mailServer.smtpAuth}"/>
+
+            <p:commandButton value="Submit" action="#{mailServerJsfController.save()}"/>
+            <p:commandButton value="Reset" type="reset"/>
+        </h:panelGrid>
+    </h:form>
 </h:body>
 
 </html>

@@ -8,7 +8,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name="message")
-public class Message {
+public class Message implements IOwnedId{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
@@ -26,6 +26,7 @@ public class Message {
     @Column(name="text")
     private String text;
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -56,6 +57,22 @@ public class Message {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        return title != null ? title.equals(message.title) : message.title == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return title != null ? title.hashCode() : 0;
     }
 
     @Override

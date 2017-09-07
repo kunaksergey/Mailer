@@ -2,8 +2,8 @@
 <!--
   Created by IntelliJ IDEA.
   User: superkostya
-  Date: 03.09.17
-  Time: 17:06
+  Date: 07.09.17
+  Time: 9:43
 -->
 <!DOCTYPE html
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -16,31 +16,32 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
-    <title>List messages</title>
+    <title>List tasks</title>
 </h:head>
 
 <h:body>
     <ui:composition template = "/template/menu.xhtml">
         <ui:define name="content">
             <h:form id="form">
-                <p:commandButton value="New" id="new"  actionListener="#{messageJsfController.create}" styleClass="ui-priority-primary" />
-                <p:dataTable id="singleDT" var="message" value="#{messageJsfController.mailAddressSet()}" selectionMode="single" selection="#{messageJsfController.selectedMessage}" rowKey="#{message.id}"
+                <p:growl id="message" showDetail="true" />
+                <p:commandButton value="New" id="new"  actionListener="#{taskJsfController.create}" styleClass="ui-priority-primary" />
+                <p:dataTable id="singleDT" var="task" value="#{taskJsfController.taskSet()}" selectionMode="single" selection="#{taskJsfController.selectedTask}" rowKey="#{task.id}"
                              paginator="true"
                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="5,10,15">
                     <f:facet name="header">
-                        Message List
+                        Task List
                     </f:facet>
 
                     <p:column headerText="Title" >
-                        <h:outputText value="#{message.title}" />
+                        <h:outputText value="#{task.title}" />
                     </p:column>
-                 </p:dataTable>
+                </p:dataTable>
 
                 <p:contextMenu for="singleDT">
                     <p:menuitem value="View" update="messageDetail" icon="ui-icon-search" oncomplete="PF('messageDialog').show()"/>
-                    <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{messageJsfController.edit()}"/>
-                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{messageJsfController.delete()}">
+                    <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{taskJsfController.edit()}"/>
+                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{taskJsfController.delete()}">
                         <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
                     </p:menuitem>
                 </p:contextMenu>
@@ -52,12 +53,18 @@
 
                 <p:dialog header="Message Info" widgetVar="messageDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                     <p:outputPanel id="messageDetail" style="text-align:center;">
-                        <p:panelGrid  columns="2" rendered="#{not empty messageJsfController.selectedMessage}" columnClasses="label,value">
+                        <p:panelGrid  columns="2" rendered="#{not empty taskJsfController.selectedTask}" columnClasses="label,value">
                             <h:outputText value="Title:" />
-                            <h:outputText value="#{messageJsfController.selectedMessage.title}" />
+                            <h:outputText value="#{taskJsfController.selectedTask.title}" />
 
-                            <h:outputText value="Year" />
-                            <h:outputText value="#{messageJsfController.selectedMessage.text}" />
+                            <h:outputText value="Message" />
+                            <h:outputText value="#{taskJsfController.selectedTask.message.title}" />
+
+                            <h:outputText value="Group Mail Address" />
+                            <h:outputText value="#{taskJsfController.selectedTask.groupMailAddress.title}" />
+
+                            <h:outputText value="Group Mail Server" />
+                            <h:outputText value="#{taskJsfController.selectedTask.groupMailServer.title}" />
                         </p:panelGrid>
                     </p:outputPanel>
                 </p:dialog>
@@ -66,5 +73,6 @@
         </ui:define>
     </ui:composition>
 </h:body>
+
 
 </html>

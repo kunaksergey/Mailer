@@ -8,12 +8,12 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "group_mail_server")
-public class GroupMailServer {
+public class GroupMailServer implements IOwnedId{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
-    private int id;
+    private Integer id;
 
     //наименования группы
     @Column(name="title")
@@ -31,11 +31,12 @@ public class GroupMailServer {
     @JoinColumn(name = "USER_ID")
     private User owner;
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -61,5 +62,26 @@ public class GroupMailServer {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GroupMailServer that = (GroupMailServer) o;
+
+        return title != null ? title.equals(that.title) : that.title == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return title != null ? title.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return title;
     }
 }

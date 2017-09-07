@@ -1,9 +1,8 @@
 package ua.shield.jsf.controller;
 
 import ua.shield.entity.Message;
-import ua.shield.helper.URL;
+import ua.shield.helper.Url;
 import ua.shield.service.IService;
-import ua.shield.service.MessageService;
 import ua.shield.service.SecurityServiceImpl;
 
 import javax.annotation.PostConstruct;
@@ -19,7 +18,7 @@ import java.util.Set;
  */
 @ManagedBean
 @SessionScoped
-public class MessageJsfController {
+public class MessageJsfController extends MainJsfController<Message> {
     private Message message;
     private Message selectedMessage;
 
@@ -39,10 +38,21 @@ public class MessageJsfController {
 
     }
 
+    @Override
+    public String getUrlEdit() {
+        return Url.MESSAGE_EDIT_URL;
+    }
+
+    @Override
+    public String getUrlList() {
+        return Url.MESSAGE_LIST_URL;
+    }
+
+
     public void edit() {
         message = selectedMessage;
         try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(URL.MESSAGE_EDIT_URL);
+            FacesContext.getCurrentInstance().getExternalContext().redirect(Url.MESSAGE_EDIT_URL);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,7 +67,7 @@ public class MessageJsfController {
         }
         message = new Message();
         try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(URL.MESSAGE_LIST_URL);
+            FacesContext.getCurrentInstance().getExternalContext().redirect(Url.MESSAGE_LIST_URL);
         } catch (IOException e) {
             e.printStackTrace();
         }

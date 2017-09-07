@@ -23,6 +23,7 @@
     <ui:composition template = "/template/menu.xhtml">
         <ui:define name="content">
             <h:form id="form">
+                <p:commandButton value="New" id="new"  actionListener="#{mailServerJsfController.create}" styleClass="ui-priority-primary" />
                 <p:dataTable id="singleDT" var="server" value="#{mailServerJsfController.mailServerSet()}" selectionMode="single" selection="#{mailServerJsfController.selectedMailServer}" rowKey="#{server.id}">
                     <f:facet name="header">
                         Server List
@@ -36,7 +37,15 @@
                 <p:contextMenu for="singleDT">
                     <p:menuitem value="View" update="serverDetail" icon="ui-icon-search" oncomplete="PF('serverDialog').show()"/>
                     <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{mailServerJsfController.edit()}"/>
+                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{mailServerJsfController.delete()}">
+                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                    </p:menuitem>
                 </p:contextMenu>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
 
                 <p:dialog header="Server Info" widgetVar="serverDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                     <p:outputPanel id="serverDetail" style="text-align:center;">
@@ -44,14 +53,17 @@
                             <h:outputText value="Host:" />
                             <h:outputText value="#{mailServerJsfController.selectedMailServer.host}" />
 
-                            <h:outputText value="Post" />
+                            <h:outputText value="Port" />
                             <h:outputText value="#{mailServerJsfController.selectedMailServer.port}" />
+
+                            <h:outputText value="Protocol" />
+                            <h:outputText value="#{mailServerJsfController.selectedMailServer.protocol}" />
 
                             <h:outputText value="Sender" />
                             <h:outputText value="#{mailServerJsfController.selectedMailServer.sender}" />
 
-                            <h:outputText value="Protocol" />
-                            <h:outputText value="#{mailServerJsfController.selectedMailServer.protocol}" />
+                            <h:outputText value="User" />
+                            <h:outputText value="#{mailServerJsfController.selectedMailServer.username}" />
 
                             <h:outputText value="Smtp auth" />
                             <h:outputText value="#{mailServerJsfController.selectedMailServer.smtpAuth}" />

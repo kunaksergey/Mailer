@@ -1,12 +1,9 @@
 package ua.shield.jsf.controller;
 
 import ua.shield.entity.MailAddress;
-import ua.shield.entity.MailServer;
-import ua.shield.entity.Message;
 import ua.shield.helper.FrontMessage;
-import ua.shield.helper.URL;
+import ua.shield.helper.Url;
 import ua.shield.service.IService;
-import ua.shield.service.MailAddressService;
 import ua.shield.service.SecurityServiceImpl;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +19,7 @@ import java.util.Set;
  */
 @ManagedBean
 @SessionScoped
-public class MailAddressJsfController {
+public class MailAddressJsfController extends MainJsfController<MailAddress> {
 
     private MailAddress mailAddress;
     private MailAddress selectedMailAddress;
@@ -34,6 +31,7 @@ public class MailAddressJsfController {
     IService<MailAddress> service;
 
     @PostConstruct
+    @Override
     public void init() {
         mailAddress = new MailAddress();
     }
@@ -50,31 +48,30 @@ public class MailAddressJsfController {
             service.update(mailAddress);
         }
         mailAddress = new MailAddress();
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(URL.MAIL_ADDRESS_LIST_URL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Url.redirect(Url.MAIL_ADDRESS_LIST_URL);
+
+    }
+
+    @Override
+    public String getUrlEdit() {
+        return Url.MAIL_ADDRESS_EDIT_URL;
+    }
+
+    @Override
+    public String getUrlList() {
+        return Url.MAIL_ADDRESS_LIST_URL;
     }
 
     public void edit() {
         mailAddress = selectedMailAddress;
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(URL.MAIL_ADDRESS_EDIT_URL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Url.redirect(Url.MAIL_ADDRESS_EDIT_URL);
     }
 
     public void delete() {
         service.delete(selectedMailAddress);
         selectedMailAddress=null;
-        FrontMessage.addMessage("Mail address was deleted");
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(URL.MAIL_ADDRESS_LIST_URL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FrontMessage.addMessage("Deleted");
+        Url.redirect(Url.MAIL_ADDRESS_LIST_URL);
     }
 
     public MailAddress getMailAddress() {

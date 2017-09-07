@@ -1,32 +1,30 @@
 package ua.shield.jsf.controller;
 
-import org.primefaces.model.DefaultTreeNode;
-import org.primefaces.model.TreeNode;
+import ua.shield.entity.MailAddress;
 import ua.shield.entity.MailServer;
-import ua.shield.entity.Message;
-import ua.shield.helper.URL;
+import ua.shield.enumer.Protocol;
+import ua.shield.helper.Url;
 import ua.shield.service.IService;
-import ua.shield.service.MailServerService;
 import ua.shield.service.SecurityServiceImpl;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by sa on 03.09.17.
  */
 @ManagedBean
-@ViewScoped
-public class MailServerJsfController {
+@SessionScoped
+public class MailServerJsfController extends MainJsfController<MailServer> {
 
     private MailServer mailServer;
     private MailServer selectedMailServer;
+    private List<Protocol> protocolList;
 
     @ManagedProperty("#{securityService}")
     private SecurityServiceImpl securityService;
@@ -37,6 +35,7 @@ public class MailServerJsfController {
     @PostConstruct
     public void init() {
         mailServer = new MailServer();
+        protocolList=Arrays.asList(Protocol.values());
     }
 
     public Set<MailServer> mailServerSet() {
@@ -45,11 +44,34 @@ public class MailServerJsfController {
  }
     public void edit() {
         mailServer = selectedMailServer;
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(URL.MAIL_SERVER_EDIT_URL);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Url.redirect(Url.MAIL_SERVER_EDIT_URL);
+    }
+
+    public void save() {
+        if (mailServer.getId() == null) {
+            mailServer.setOwner(securityService.getRegisteredUser());
+            service.add(mailServer);
+        } else {
+            service.update(mailServer);
         }
+        mailServer = new MailServer();
+        Url.redirect(Url.MAIL_SERVER_LIST_URL);
+
+    }
+
+    public void create(){
+        init();
+        Url.redirect(Url.MAIL_SERVER_EDIT_URL);
+    }
+
+    @Override
+    public String getUrlEdit() {
+        return Url.MAIL_SERVER_EDIT_URL;
+    }
+
+    @Override
+    public String getUrlList() {
+        return Url.MAIL_ADDRESS_LIST_URL;
     }
 
     public MailServer getMailServer() {
@@ -82,6 +104,14 @@ public class MailServerJsfController {
 
     public void setService(IService service) {
         this.service = service;
+    }
+
+    public List<Protocol> getProtocolList() {
+        return protocolList;
+    }
+
+    public void setProtocolList(List<Protocol> protocolList) {
+        this.protocolList = protocolList;
     }
 }
 

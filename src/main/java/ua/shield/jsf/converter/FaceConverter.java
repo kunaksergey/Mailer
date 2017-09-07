@@ -20,10 +20,11 @@ import javax.faces.convert.Converter;
 abstract public class FaceConverter<T extends IOwnedId> implements Converter {
 
 
-     public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
+    public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
         if(value != null && value.trim().length() > 0) {
             try {
-                 return getService().findById(Integer.parseInt(value));
+                IService s=getService();
+                   return s.findById(Integer.parseInt(value));
             } catch(NumberFormatException e) {
                FrontMessage.addMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid entity.");
             }
@@ -35,13 +36,16 @@ abstract public class FaceConverter<T extends IOwnedId> implements Converter {
 
     public String getAsString(FacesContext fc, UIComponent uic, Object object) {
         if(object != null) {
-            return String.valueOf(((T) object).getId());
+            String str=String.valueOf(((T) object).getId());
+            return str;
         }
         else {
             return null;
         }
     }
 
-   abstract public IService getService();
+
+   abstract public IService<T> getService();
+   abstract public void setService(IService<T> service);
 
 }

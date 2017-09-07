@@ -1,20 +1,23 @@
 package ua.shield.jsf.controller;
 
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TransferEvent;
+import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.DualListModel;
 import ua.shield.entity.GroupMailAddress;
 import ua.shield.entity.MailAddress;
-import ua.shield.exeption.UserIsNotRegisteredExeption;
 import ua.shield.helper.FrontMessage;
-import ua.shield.helper.URL;
-import ua.shield.service.GroupMailAddressService;
+import ua.shield.helper.Url;
 import ua.shield.service.IService;
 import ua.shield.service.SecurityServiceImpl;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -24,48 +27,107 @@ import java.util.Set;
 @SessionScoped
 public class GroupMailAddressJsfController extends MainJsfController<GroupMailAddress> {
 
-    GroupMailAddress groupMailAddress;
-    GroupMailAddress selectedGroupMailAddress;
+
+    private GroupMailAddress groupMailAddress;
+    private GroupMailAddress selectedGroupMailAddress;
+    private DualListModel<MailAddress> dualListModel;
 
     @ManagedProperty("#{securityService}")
     private SecurityServiceImpl securityService;
 
     @ManagedProperty("#{groupMailAddressService}")
-    IService<GroupMailAddress> service;
+    IService<GroupMailAddress> groupService;
 
-    public void save() {
+    @ManagedProperty("#{mailAddressService}")
+    IService<MailAddress> service;
+
+    @PostConstruct
+    @Override
+    public void init() {
+        groupMailAddress = new GroupMailAddress();
+        List<MailAddress> source = new ArrayList<>(service.findAllByOwner());
+        List<MailAddress> target = new ArrayList<>();
+        dualListModel = new DualListModel<>(source, target);
+    }
+
+    @Override
+    public String getUrlEdit() {
+        return Url.GROUP_MAIL_ADDRESS_EDIT_URL;
+    }
+
+    @Override
+    public String getUrlList() {
+         return Url.GROUP_MAIL_ADDRESS_LIST_URL;
+    }
+
+    public Set<GroupMailAddress> groupMailAddressSet() {
+        return groupService.findAllByOwner();
+    }
+
+
+    @Override
+     public void save() {
+        groupMailAddress.setMailAddressSet(new HashSet<>(dualListModel.getTarget()));
         if (groupMailAddress.getId() == null) {
             groupMailAddress.setOwner(securityService.getRegisteredUser());
-            service.add(groupMailAddress);
+            groupService.add(groupMailAddress);
         } else {
-            service.update(groupMailAddress);
+            groupService.update(groupMailAddress);
         }
-        groupMailAddress = new GroupMailAddress();
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(URL.MAIL_ADDRESS_LIST_URL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FrontMessage.addMessage("Saved");
+        init();
+        Url.redirect(Url.GROUP_MAIL_ADDRESS_LIST_URL);
     }
+
 
     public void edit() {
         groupMailAddress = selectedGroupMailAddress;
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(URL.MAIL_ADDRESS_EDIT_URL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        //находим разницу коллекций
+        Set<MailAddress> diffSet = service.findAllByOwner();
+        diffSet.removeAll(selectedGroupMailAddress.getMailAddressSet());
+
+        dualListModel = new DualListModel<>(new ArrayList<>(diffSet),
+                new ArrayList<>(selectedGroupMailAddress.getMailAddressSet()));
+
+        Url.redirect(Url.GROUP_MAIL_ADDRESS_EDIT_URL);
     }
 
     public void delete() {
-        service.delete(selectedGroupMailAddress);
-        selectedGroupMailAddress=null;
-        FrontMessage.addMessage("Mail group was deleted");
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(URL.MAIL_ADDRESS_LIST_URL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        groupService.delete(selectedGroupMailAddress);
+        selectedGroupMailAddress = null;
+        FrontMessage.addMessage("Deleted");
+
+        Url.redirect(Url.GROUP_MAIL_ADDRESS_LIST_URL);
+    }
+
+    public void onTransfer(TransferEvent event) {
+//        StringBuilder builder = new StringBuilder();
+//        for(Object item : event.getItems()) {
+//            builder.append(((Theme) item).getName()).append("<br />");
+//        }
+//
+//        FacesMessage msg = new FacesMessage();
+//        msg.setSeverity(FacesMessage.SEVERITY_INFO);
+//        msg.setSummary("Items Transferred");
+//        msg.setDetail(builder.toString());
+//
+//        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void onSelect(SelectEvent event) {
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Selected", event.getObject().toString()));
+    }
+
+    public void onUnselect(UnselectEvent event) {
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Item Unselected", event.getObject().toString()));
+    }
+
+    public void onReorder() {
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "List Reordered", null));
     }
 
     public GroupMailAddress getGroupMailAddress() {
@@ -92,11 +154,29 @@ public class GroupMailAddressJsfController extends MainJsfController<GroupMailAd
         this.securityService = securityService;
     }
 
-    public IService<GroupMailAddress> getService() {
+    public IService<GroupMailAddress> getGroupService() {
+        return groupService;
+    }
+
+    public void setGroupService(IService<GroupMailAddress> groupService) {
+        this.groupService = groupService;
+    }
+
+    public IService<MailAddress> getService() {
         return service;
     }
 
-    public void setService(IService<GroupMailAddress> service) {
+    public void setService(IService<MailAddress> service) {
         this.service = service;
     }
+
+    public DualListModel<MailAddress> getDualListModel() {
+        return dualListModel;
+    }
+
+    public void setDualListModel(DualListModel<MailAddress> dualListModel) {
+        this.dualListModel = dualListModel;
+    }
+
+
 }
