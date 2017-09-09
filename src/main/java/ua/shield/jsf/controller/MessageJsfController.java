@@ -1,6 +1,7 @@
 package ua.shield.jsf.controller;
 
 import ua.shield.entity.Message;
+import ua.shield.helper.FrontMessage;
 import ua.shield.helper.Url;
 import ua.shield.service.IService;
 import ua.shield.service.SecurityServiceImpl;
@@ -19,23 +20,21 @@ import java.util.Set;
 @ManagedBean
 @SessionScoped
 public class MessageJsfController extends MainJsfController<Message> {
-    private Message message;
-    private Message selectedMessage;
 
     @ManagedProperty("#{securityService}")
     private SecurityServiceImpl securityService;
 
     @ManagedProperty("#{messageService}")
-    IService service;
+    private IService<Message> entityService;
 
     @PostConstruct
     public void init() {
-        message = new Message();
+        super.init();
     }
 
-    public Set<Message> mailAddressSet() {
-        return service.findAllByOwner();
-
+    @Override
+    Message newInstance() {
+        return new Message();
     }
 
     @Override
@@ -48,45 +47,20 @@ public class MessageJsfController extends MainJsfController<Message> {
         return Url.MESSAGE_LIST_URL;
     }
 
-
-    public void edit() {
-        message = selectedMessage;
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(Url.MESSAGE_EDIT_URL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void save() {
-        if (message.getId() == null) {
-            message.setOwner(securityService.getRegisteredUser());
-            service.add(message);
-        } else {
-            service.update(message);
-        }
-        message = new Message();
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(Url.MESSAGE_LIST_URL);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String getText() {
-        return message.getText();
+        return getEntity().getText();
     }
 
     public void setText(String text) {
-        message.setText(text);
+        getEntity().setText(text);
     }
 
     public String getTitle() {
-        return message.getTitle();
+        return getEntity().getTitle();
     }
 
     public void setTitle(String title) {
-        message.setTitle(title);
+        getEntity().setTitle(title);
     }
 
     public SecurityServiceImpl getSecurityService() {
@@ -97,27 +71,11 @@ public class MessageJsfController extends MainJsfController<Message> {
         this.securityService = securityService;
     }
 
-    public IService getService() {
-        return service;
+    public IService<Message> getEntityService() {
+        return entityService;
     }
 
-    public void setService(IService service) {
-        this.service = service;
-    }
-
-    public Message getSelectedMessage() {
-        return selectedMessage;
-    }
-
-    public void setSelectedMessage(Message selectedMessage) {
-        this.selectedMessage = selectedMessage;
-    }
-
-    public Message getMessage() {
-        return message;
-    }
-
-    public void setMessage(Message message) {
-        this.message = message;
+    public void setEntityService(IService<Message> entityService) {
+        this.entityService = entityService;
     }
 }

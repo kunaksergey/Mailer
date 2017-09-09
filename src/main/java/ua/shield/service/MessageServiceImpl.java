@@ -67,7 +67,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void delete(Message entity) {
-
+        messageRepository.delete(entity);
     }
 
     @Override

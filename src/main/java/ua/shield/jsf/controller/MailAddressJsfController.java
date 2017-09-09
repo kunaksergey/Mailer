@@ -1,7 +1,6 @@
 package ua.shield.jsf.controller;
 
 import ua.shield.entity.MailAddress;
-import ua.shield.helper.FrontMessage;
 import ua.shield.helper.Url;
 import ua.shield.service.IService;
 import ua.shield.service.SecurityServiceImpl;
@@ -10,9 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
-import java.util.Set;
 
 /**
  * Created by sa on 03.09.17.
@@ -21,35 +17,21 @@ import java.util.Set;
 @SessionScoped
 public class MailAddressJsfController extends MainJsfController<MailAddress> {
 
-    private MailAddress mailAddress;
-    private MailAddress selectedMailAddress;
-
     @ManagedProperty("#{securityService}")
     private SecurityServiceImpl securityService;
 
     @ManagedProperty("#{mailAddressService}")
-    IService<MailAddress> service;
+    private IService<MailAddress> entityService;
 
     @PostConstruct
     @Override
     public void init() {
-        mailAddress = new MailAddress();
+        super.init();
     }
 
-    public Set<MailAddress> mailAddressSet() {
-        return service.findAllByOwner();
-    }
-
-    public void save() {
-        if (mailAddress.getId() == null) {
-            mailAddress.setOwner(securityService.getRegisteredUser());
-            service.add(mailAddress);
-        } else {
-            service.update(mailAddress);
-        }
-        mailAddress = new MailAddress();
-        Url.redirect(Url.MAIL_ADDRESS_LIST_URL);
-
+    @Override
+    MailAddress newInstance() {
+        return new MailAddress();
     }
 
     @Override
@@ -62,34 +44,6 @@ public class MailAddressJsfController extends MainJsfController<MailAddress> {
         return Url.MAIL_ADDRESS_LIST_URL;
     }
 
-    public void edit() {
-        mailAddress = selectedMailAddress;
-        Url.redirect(Url.MAIL_ADDRESS_EDIT_URL);
-    }
-
-    public void delete() {
-        service.delete(selectedMailAddress);
-        selectedMailAddress=null;
-        FrontMessage.addMessage("Deleted");
-        Url.redirect(Url.MAIL_ADDRESS_LIST_URL);
-    }
-
-    public MailAddress getMailAddress() {
-        return mailAddress;
-    }
-
-    public void setMailAddress(MailAddress mailAddress) {
-        this.mailAddress = mailAddress;
-    }
-
-    public MailAddress getSelectedMailAddress() {
-        return selectedMailAddress;
-    }
-
-    public void setSelectedMailAddress(MailAddress selectedMailAddress) {
-        this.selectedMailAddress = selectedMailAddress;
-    }
-
     public SecurityServiceImpl getSecurityService() {
         return securityService;
     }
@@ -98,11 +52,11 @@ public class MailAddressJsfController extends MainJsfController<MailAddress> {
         this.securityService = securityService;
     }
 
-    public IService getService() {
-        return service;
+    public IService<MailAddress> getEntityService() {
+        return entityService;
     }
 
-    public void setService(IService service) {
-        this.service = service;
+    public void setEntityService(IService<MailAddress> entityService) {
+        this.entityService = entityService;
     }
 }

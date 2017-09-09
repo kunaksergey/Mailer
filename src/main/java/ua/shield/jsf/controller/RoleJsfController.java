@@ -2,7 +2,6 @@ package ua.shield.jsf.controller;
 
 import ua.shield.entity.Role;
 import ua.shield.service.RoleService;
-import ua.shield.service.SecurityServiceImpl;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -19,10 +18,10 @@ public class RoleJsfController {
     Role role;
 
     @ManagedProperty("#{roleService}")
-    RoleService service;
+    RoleService entityService;
 
-    public Set<Role> mailAddressSet() {
-        return service.findAllByOwner();
+    public Set<Role> entitySet() {
+        return entityService.findAllByOwner();
 
     }
 }

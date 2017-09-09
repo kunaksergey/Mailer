@@ -2,7 +2,7 @@
 <!--
   Created by IntelliJ IDEA.
   User: superkostya
-  Date: 07.09.17
+  Date: 07.09.17А
   Time: 9:43
 -->
 <!DOCTYPE html
@@ -20,56 +20,46 @@
 </h:head>
 
 <h:body>
-    <ui:composition template = "/template/menu.xhtml">
-        <ui:define name="content">
-            <h:form id="form">
-                <p:growl id="message" showDetail="true" />
-                <p:commandButton value="New" id="new"  actionListener="#{taskJsfController.create}" styleClass="ui-priority-primary" />
-                <p:dataTable id="singleDT" var="task" value="#{taskJsfController.taskSet()}" selectionMode="single" selection="#{taskJsfController.selectedTask}" rowKey="#{task.id}"
-                             paginator="true"
-                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             rowsPerPageTemplate="5,10,15">
-                    <f:facet name="header">
-                        Task List
-                    </f:facet>
+    <ui:composition template="/template/list.xhtml">
+        <ui:param name="title" value="Task List"/>
+        <ui:param name="entity" value="#{taskJsfController}"/>
 
-                    <p:column headerText="Title" >
-                        <h:outputText value="#{task.title}" />
-                    </p:column>
-                </p:dataTable>
+        <ui:define name="dataTable">
+            <p:dataTable id="singleDT" var="task" value="#{taskJsfController.entitySet()}" selectionMode="single"
+                         selection="#{taskJsfController.selectedEntity}" rowKey="#{task.id}"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                <f:facet name="header">
+                    Task List
+                </f:facet>
 
-                <p:contextMenu for="singleDT">
-                    <p:menuitem value="View" update="messageDetail" icon="ui-icon-search" oncomplete="PF('messageDialog').show()"/>
-                    <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{taskJsfController.edit()}"/>
-                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{taskJsfController.delete()}">
-                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
-                    </p:menuitem>
-                </p:contextMenu>
+                <p:column headerText="Title">
+                    <h:outputText value="#{task.title}"/>
+                </p:column>
+            </p:dataTable>
+        </ui:define>
 
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                </p:confirmDialog>
+        <ui:define name="dialog">
+            <p:dialog header="Message Info" widgetVar="entityDialog" modal="true" showEffect="fade" hideEffect="fade"
+                      resizable="false">
+                <p:outputPanel id="entityDetail" style="text-align:center;">
+                    <p:panelGrid columns="2" rendered="#{not empty taskJsfController.selectedEntity}"
+                                 columnClasses="label,value">
+                        <h:outputText value="Title:"/>
+                        <h:outputText value="#{taskJsfController.selectedEntity.title}"/>
 
-                <p:dialog header="Message Info" widgetVar="messageDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                    <p:outputPanel id="messageDetail" style="text-align:center;">
-                        <p:panelGrid  columns="2" rendered="#{not empty taskJsfController.selectedTask}" columnClasses="label,value">
-                            <h:outputText value="Title:" />
-                            <h:outputText value="#{taskJsfController.selectedTask.title}" />
+                        <h:outputText value="Message"/>
+                        <h:outputText value="#{taskJsfController.selectedEntity.message.title}"/>
 
-                            <h:outputText value="Message" />
-                            <h:outputText value="#{taskJsfController.selectedTask.message.title}" />
+                        <h:outputText value="Group Mail Address"/>
+                        <h:outputText value="#{taskJsfController.selectedEntity.groupMailAddress.title}"/>
 
-                            <h:outputText value="Group Mail Address" />
-                            <h:outputText value="#{taskJsfController.selectedTask.groupMailAddress.title}" />
-
-                            <h:outputText value="Group Mail Server" />
-                            <h:outputText value="#{taskJsfController.selectedTask.groupMailServer.title}" />
-                        </p:panelGrid>
-                    </p:outputPanel>
-                </p:dialog>
-
-            </h:form>
+                        <h:outputText value="Group Mail Server"/>
+                        <h:outputText value="#{taskJsfController.selectedEntity.groupMailServer.title}"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
         </ui:define>
     </ui:composition>
 </h:body>

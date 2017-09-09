@@ -22,27 +22,27 @@
     <h:form>
         <h:panelGrid columns="2" cellpadding="5">
             <p:outputLabel for="host" value="Host:" />
-            <p:inputText id="host" value="#{mailServerJsfController.mailServer.host}"/>
+            <p:inputText id="host" value="#{mailServerJsfController.entity.host}"/>
 
             <p:outputLabel for="port" value="Port:" />
-            <p:inputText id="port" value="#{mailServerJsfController.mailServer.port}"/>
+            <p:inputText id="port" value="#{mailServerJsfController.entity.port}"/>
 
             <p:outputLabel for="protocol" value="Protocol:" />
-            <p:selectOneMenu id="protocol" value="#{mailServerJsfController.mailServer.protocol}">
+            <p:selectOneMenu id="protocol" value="#{mailServerJsfController.entity.protocol}">
                 <f:selectItems value="#{mailServerJsfController.protocolList}" var="protocol" itemLabel="#{protocol}" itemValue="#{protocol}" />
             </p:selectOneMenu>
 
             <p:outputLabel for="sender" value="Sender:" />
-            <p:inputText id="sender" value="#{mailServerJsfController.mailServer.sender}"/>
+            <p:inputText id="sender" value="#{mailServerJsfController.entity.sender}"/>
 
             <p:outputLabel for="username" value="Username:" />
-            <p:inputText id="username" value="#{mailServerJsfController.mailServer.username}"/>
+            <p:inputText id="username" value="#{mailServerJsfController.entity.username}"/>
 
             <p:outputLabel for="password" value="Password:" />
-            <p:password id="password" value="#{mailServerJsfController.mailServer.password}"/>
+            <p:password id="password" value="#{mailServerJsfController.entity.password}"/>
 
             <p:outputLabel for="smtpAuth" value="Smtp Auth:" />
-            <p:inputSwitch  id="smtpAuth" value="#{mailServerJsfController.mailServer.smtpAuth}"/>
+            <p:inputSwitch  id="smtpAuth" value="#{mailServerJsfController.entity.smtpAuth}"/>
 
             <p:commandButton value="Submit" action="#{mailServerJsfController.save()}"/>
             <p:commandButton value="Reset" type="reset"/>

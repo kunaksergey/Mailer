@@ -15,22 +15,22 @@
         <p:growl id="growl" showDetail="true" sticky="true" />
         <h:panelGrid columns="2" cellpadding="5">
             <p:outputLabel for="title" value="Title:" />
-            <p:inputText id="title" value="#{taskJsfController.task.title}"/>
+            <p:inputText id="title" value="#{taskJsfController.entity.title}"/>
 
             <p:outputLabel for="message" value="Message:" />
-            <p:selectOneMenu id="message" value="#{taskJsfController.task.message}" converter="#{messageConverter}" filter="true" filterMatchMode="startsWith">
+            <p:selectOneMenu id="message" value="#{taskJsfController.entity.message}" converter="#{messageConverter}" filter="true" filterMatchMode="startsWith">
                 <f:selectItems value="#{taskJsfController.messageSet}" var="message" itemLabel="#{message.title}" itemValue="#{message}"  />
            </p:selectOneMenu>
 
 
-            <p:outputLabel for="groupMailAddress" value="Email group:" />
-            <p:selectOneMenu id="groupMailAddress" value="#{taskJsfController.task.groupMailAddress}" converter="#{groupMailAddressConverter}" filter="true" filterMatchMode="startsWith">
-                <f:selectItems value="#{taskJsfController.groupMailAddressSet}" var="groupMailAddress" itemLabel="#{groupMailAddress.title}" itemValue="#{groupMailAddress}"  />
+            <p:outputLabel for="mailGroup" value="Email group:" />
+            <p:selectOneMenu id="mailGroup" value="#{taskJsfController.entity.groupMailAddress}" converter="#{groupMailAddressConverter}" filter="true" filterMatchMode="startsWith">
+                <f:selectItems value="#{taskJsfController.groupMailAddressSet}" var="mailGroup" itemLabel="#{mailGroup.title}" itemValue="#{mailGroup}"  />
             </p:selectOneMenu>
 
 
             <p:outputLabel for="groupMailServer" value="Server group:" />
-            <p:selectOneMenu id="groupMailServer" value="#{taskJsfController.task.groupMailServer}" converter="#{groupMailServerConverter}" filter="true" filterMatchMode="startsWith">
+            <p:selectOneMenu id="groupMailServer" value="#{taskJsfController.entity.groupMailServer}" converter="#{groupMailServerConverter}" filter="true" filterMatchMode="startsWith">
                 <f:selectItems value="#{taskJsfController.groupMailServerSet}" var="groupMailServer" itemLabel="#{groupMailServer.title}" itemValue="#{groupMailServer}"  />
             </p:selectOneMenu>
 

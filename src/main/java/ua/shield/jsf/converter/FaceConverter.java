@@ -1,14 +1,11 @@
 package ua.shield.jsf.converter;
 
-import ua.shield.entity.IOwnedId;
+import ua.shield.entity.IOwned;
 import ua.shield.entity.Task;
 import ua.shield.helper.FrontMessage;
 import ua.shield.service.IService;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -17,14 +14,15 @@ import javax.faces.convert.Converter;
  * Created by sa on 05.09.17.
  */
 
-abstract public class FaceConverter<T extends IOwnedId> implements Converter {
+abstract public class FaceConverter<T extends IOwned> implements Converter {
 
 
     public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
         if(value != null && value.trim().length() > 0) {
             try {
-                IService s=getService();
-                   return s.findById(Integer.parseInt(value));
+//                IService<T> s=getService();
+//                T task=s.findById(Integer.parseInt(value));
+                   return getService().findById(Integer.parseInt(value));
             } catch(NumberFormatException e) {
                FrontMessage.addMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid entity.");
             }

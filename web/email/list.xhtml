@@ -15,52 +15,44 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
-    <title>List dualListModel</title>
+    <title>E-mail list</title>
 </h:head>
 
 
 <h:body>
-    <ui:composition template = "/template/menu.xhtml">
-        <ui:define name="content">
-            <p:commandButton value="New" id="new"  actionListener="#{mailAddressJsfController.create}" styleClass="ui-priority-primary" />
-            <h:form id="form">
-                <p:dataTable id="singleDT" var="email" value="#{mailAddressJsfController.mailAddressSet()}" selectionMode="single" selection="#{mailAddressJsfController.selectedMailAddress}" rowKey="#{email.id}"
-                             paginator="true"
-                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             rowsPerPageTemplate="5,10,15">
-                    <f:facet name="header">
-                        E-mail addresses List
-                    </f:facet>
-                    <p:column headerText="Title" >
-                        <h:outputText value="#{email.emailAddress}" />
-                    </p:column>
+    <ui:composition template="/template/list.xhtml">
+        <ui:param name="title" value="E-mail List"/>
+        <ui:param name="entity" value="#{mailAddressJsfController}"/>
 
-                </p:dataTable>
-
-
-                <p:contextMenu for="singleDT">
-                    <p:menuitem value="View" icon="ui-icon-search" update="emailDetail"  oncomplete="PF('emailDialog').show()"/>
-                    <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{mailAddressJsfController.edit()}"/>
-                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{mailAddressJsfController.delete()}">
-                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
-                    </p:menuitem>
-                </p:contextMenu>
-
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                </p:confirmDialog>
-
-                <p:dialog header="E-mail Info" widgetVar="emailDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                    <p:outputPanel id="emailDetail" style="text-align:center;">
-                        <p:panelGrid  columns="2" rendered="#{not empty mailAddressJsfController.selectedMailAddress}" columnClasses="label,value">
-                            <h:outputText value="Email:" />
-                            <h:outputText value="#{mailAddressJsfController.selectedMailAddress.emailAddress}" />
-                        </p:panelGrid>
-                    </p:outputPanel>
-                </p:dialog>
-            </h:form>
+        <ui:define name="dataTable">
+            <p:dataTable id="singleDT" var="email" value="#{mailAddressJsfController.entitySet()}"
+                         selectionMode="single" selection="#{mailAddressJsfController.selectedEntity}"
+                         rowKey="#{email.id}"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                <f:facet name="header">
+                    E-mail addresses List
+                </f:facet>
+                <p:column headerText="Title">
+                    <h:outputText value="#{email.emailAddress}"/>
+                </p:column>
+            </p:dataTable>
         </ui:define>
+
+        <ui:define name="dialog">
+            <p:dialog header="E-mail Info" widgetVar="entityDialog" modal="true" showEffect="fade" hideEffect="fade"
+                      resizable="false">
+                <p:outputPanel id="entityDetail" style="text-align:center;">
+                    <p:panelGrid columns="2" rendered="#{not empty mailAddressJsfController.selectedEntity}"
+                                 columnClasses="label,value">
+                        <h:outputText value="Email:"/>
+                        <h:outputText value="#{mailAddressJsfController.selectedEntity.emailAddress}"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </ui:define>
+
     </ui:composition>
 </h:body>
 

@@ -21,11 +21,14 @@
 
 <h:body>
     <h:form>
+        <p:growl id="growl" showDetail="true" sticky="true" />
         <h:panelGrid columns="2" cellpadding="5">
             <p:outputLabel for="email" value="E-mail:" />
-            <p:inputText id="email" value="#{mailAddressJsfController.mailAddress.emailAddress}"/>
+            <p:inputText id="email" value="#{mailAddressJsfController.entity.emailAddress}" required="true">
+                <f:validator binding="#{emailValidator}"/>
+            </p:inputText>
 
-            <p:commandButton value="Submit" action="#{mailAddressJsfController.save()}"/>
+            <p:commandButton value="Submit" action="#{mailAddressJsfController.save()}" update="growl"/>
             <p:commandButton value="Reset" type="reset"/>
         </h:panelGrid>
     </h:form>

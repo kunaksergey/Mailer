@@ -1,7 +1,6 @@
 package ua.shield.service.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import ua.shield.entity.Message;
 import ua.shield.entity.Schedule;
 import ua.shield.entity.User;
 

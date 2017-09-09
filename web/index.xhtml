@@ -21,8 +21,9 @@
 <h:body>
     <ui:composition template="/template/menu.xhtml">
         <ui:define name="content">
+            <p:importEnum type="ua.shield.enumer.DateStrategy" var="EnumDateStrategy" allSuffix="ALL_ENUM_VALUES"/>
 
-            <h:form>
+            <h:form id="main">
                 <p:growl id="messagesEvent" showDetail="true"/>
 
                 <h:panelGrid columnClasses="value">
@@ -46,41 +47,66 @@
                         <p:outputLabel for="title" value="Titles:"/>
                         <p:inputText id="title" value="#{scheduleView.event.title}" required="true"/>
 
-
                         <p:outputLabel for="task" value="Task: "/>
-                        <p:selectOneMenu id="task" value="#{scheduleView.event.task}" converter="#{taskConverter}" panelStyle="width:180px"
-                                         required="true" effect="fade" var="t" style="width:160px" filter="true" filterMatchMode="startsWith">
-                            <f:selectItems value="#{scheduleView.tasks}" var="t" itemLabel="#{t.title}"
-                                           itemValue="#{t}"/>
-
+                        <p:selectOneMenu id="task" value="#{scheduleView.event.task}" converter="#{taskConverter}"
+                                         panelStyle="width:180px"
+                                         effect="fade" style="width:160px" filter="true"
+                                         filterMatchMode="startsWith">
+                            <f:selectItems value="#{scheduleView.tasks}" var="task" itemLabel="#{task.title}"
+                                           itemValue="#{task}"/>
                             <p:column>
-                                <h:outputText value="#{t.title}" />
+                                <h:outputText value="#{task.title}"/>
                             </p:column>
                         </p:selectOneMenu>
 
 
-
-
-                        <p:outputLabel for="typeEvent" value="Type:"/>
-                        <p:selectOneRadio id="typeEvent" value="#{scheduleView.event.typeEvent}">
-                            <f:selectItem itemLabel="ONCE" itemValue="ONCE"/>
-                            <f:selectItem itemLabel="RANGE" itemValue="RANGE"/>
-                            <f:ajax render="endRangeLabel endRangeDate"></f:ajax>
+                        <p:outputLabel for="period" value="Period:"/>
+                        <p:selectOneRadio id="period" value="#{scheduleView.event.dateStrategy}"
+                                          var="currentDateStrategy">
+                            <f:selectItems value="#{EnumDateStrategy.ALL_ENUM_VALUES}" var="currentStrategy"/>
+                            <f:ajax render="endRangeLabel endRangeDate"/>
+                            <p:ajax listener="#{scheduleView.onEventChangeDateStrategy}"
+                                    update="@(.ren)"/>
                         </p:selectOneRadio>
+
+                        <p:outputPanel styleClass="ren">
+                            <p:outputLabel for="day" value="Day:"
+                                           rendered="#{scheduleView.event.dateStrategy eq 'SPECIALPERIOD'}"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="ren">
+                            <p:inputText id="day" value="#{scheduleView.event.day}"
+                                         rendered="#{scheduleView.event.dateStrategy eq 'SPECIALPERIOD'}"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="ren">
+                            <p:outputLabel for="hour" value="Hour:"
+                                           rendered="#{scheduleView.event.dateStrategy eq 'SPECIALPERIOD'}"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="ren">
+                            <p:inputText id="hour" value="#{scheduleView.event.hour}"
+                                         rendered="#{scheduleView.event.dateStrategy eq 'SPECIALPERIOD'}"/>
+                        </p:outputPanel>
 
                         <p:outputLabel for="from" value="From:"/>
                         <p:calendar id="from" value="#{scheduleView.event.startDate}" timeZone="GMT+2"
-                                    pattern="dd/MM/yyyy HH:mm"/>
+                                    pattern="dd/MM/yyyy HH:mm">
+                            <f:validator binding="#{currentDateValidator}"/>
+                        </p:calendar>
 
                         <p:outputPanel id="endRangeLabel">
-                            <p:outputLabel for="to" value="To:" rendered="#{scheduleView.event.typeEvent eq 'RANGE'}"/>
-                        </p:outputPanel>
-                        <p:outputPanel id="endRangeDate">
-                            <p:calendar id="to" value="#{scheduleView.event.endDate}" timeZone="GMT+2"
-                                        pattern="dd/MM/yyyy" rendered="#{scheduleView.event.typeEvent eq 'RANGE'}"/>
+                            <p:outputLabel for="to" value="To:"
+                                           rendered="#{scheduleView.event.dateStrategy ne 'ONCE'}"/>
                         </p:outputPanel>
 
+                        <p:outputPanel id="endRangeDate">
+                            <p:calendar id="to" value="#{scheduleView.event.endDate}" timeZone="GMT+2"
+                                        pattern="dd/MM/yyyy"
+                                        rendered="#{scheduleView.event.dateStrategy ne 'ONCE'}"/>
+                        </p:outputPanel>
                     </p:panelGrid>
+
                     <p:commandButton type="reset" value="Reset"/>
                     <p:commandButton id="addButton" value="Save" actionListener="#{scheduleView.addEvent}"
                                      oncomplete="PF('myschedule').update();PF('eventDialog').hide();"
@@ -89,6 +115,7 @@
 
                 </p:dialog>
             </h:form>
+
 
             <style type="text/css">
                 .value {

@@ -21,29 +21,20 @@ import java.util.Set;
 @SessionScoped
 public class TaskJsfController extends MainJsfController<Task> {
 
-    Task task;
-    Task selectedTask;
-
     @ManagedProperty("#{securityService}")
     private SecurityServiceImpl securityService;
 
     @ManagedProperty("#{taskService}")
-    TaskService service;
+    private IService<Task> entityService;
 
     @ManagedProperty("#{messageService}")
-    MessageService messageService;
+    private MessageService messageService;
 
     @ManagedProperty("#{groupMailAddressService}")
-    GroupMailAddressService groupMailAddressService;
+    private GroupMailAddressService groupMailAddressService;
 
     @ManagedProperty("#{groupMailServerService}")
-    GroupMailServerService groupMailServerService;
-
-
-    //Список заданий текущего пользователя
-    public Set<Task> taskSet() {
-        return service.findAllByOwner();
-    }
+    private GroupMailServerService groupMailServerService;
 
     @Override
     public String getUrlEdit() {
@@ -58,35 +49,15 @@ public class TaskJsfController extends MainJsfController<Task> {
     @Override
     @PostConstruct
     public void init() {
-        task = new Task();
-    }
-
-    public void edit() {
-        task = selectedTask;
-        Url.redirect(Url.TASK_EDIT_URL);
-    }
-
-    public void delete() {
-        service.delete(selectedTask);
-        selectedTask=null;
-        FrontMessage.addMessage("Deleted");
-        Url.redirect(Url.TASK_LIST_URL);
+        super.init();
     }
 
     @Override
-    public void save() {
-        if (task.getId() == null) {
-            task.setOwner(securityService.getRegisteredUser());
-            service.add(task);
-        } else {
-            service.update(task);
-        }
-        FrontMessage.addMessage("Saved");
-        init();
-        Url.redirect(Url.TASK_LIST_URL);
+    Task newInstance() {
+        return new Task();
     }
 
-    //возвращаем набор сообщений пользователя
+   //возвращаем набор сообщений пользователя
     public Set<Message> getMessageSet() {
         return messageService.findAllByOwner();
     }
@@ -101,14 +72,6 @@ public class TaskJsfController extends MainJsfController<Task> {
         return groupMailServerService.findAllByOwner();
     }
 
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
     public SecurityServiceImpl getSecurityService() {
         return securityService;
     }
@@ -117,20 +80,12 @@ public class TaskJsfController extends MainJsfController<Task> {
         this.securityService = securityService;
     }
 
-    public TaskService getService() {
-        return service;
+    public IService<Task> getEntityService() {
+        return entityService;
     }
 
-    public void setService(TaskService service) {
-        this.service = service;
-    }
-
-    public Task getSelectedTask() {
-        return selectedTask;
-    }
-
-    public void setSelectedTask(Task selectedTask) {
-        this.selectedTask = selectedTask;
+    public void setEntityService(IService<Task> entityService) {
+        this.entityService = entityService;
     }
 
     public MessageService getMessageService() {

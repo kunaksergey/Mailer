@@ -1,14 +1,14 @@
 package ua.shield.entity;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.io.Serializable;
 
 /**
  * Created by sa on 01.09.17.
  */
 @Entity
 @Table(name="message")
-public class Message implements IOwnedId{
+public class Message implements IOwned,Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
@@ -35,10 +35,12 @@ public class Message implements IOwnedId{
         this.id = id;
     }
 
+    @Override
     public User getOwner() {
         return owner;
     }
 
+    @Override
     public void setOwner(User owner) {
         this.owner = owner;
     }

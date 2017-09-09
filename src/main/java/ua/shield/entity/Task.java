@@ -3,6 +3,7 @@ package ua.shield.entity;
 import ua.shield.enumer.TaskStatus;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name="task")
-public class Task implements IOwnedId {
+public class Task implements IOwned,Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +27,7 @@ public class Task implements IOwnedId {
     private Schedule schedule;
 
     //сообщение
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MESSAGE_ID")
     private Message message;
 
@@ -132,10 +133,12 @@ public class Task implements IOwnedId {
         this.status = status;
     }
 
+    @Override
     public User getOwner() {
         return owner;
     }
 
+    @Override
     public void setOwner(User owner) {
         this.owner = owner;
     }
@@ -156,6 +159,24 @@ public class Task implements IOwnedId {
         this.groupMailServer = groupMailServer;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Task task = (Task) o;
+
+        if (id != null ? !id.equals(task.id) : task.id != null) return false;
+        return title != null ? title.equals(task.title) : task.title == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        return result;
+    }
 
     @Override
     public String toString() {

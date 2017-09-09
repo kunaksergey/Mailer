@@ -1,6 +1,5 @@
 package ua.shield.jsf.controller;
 
-import ua.shield.entity.MailAddress;
 import ua.shield.entity.MailServer;
 import ua.shield.enumer.Protocol;
 import ua.shield.helper.Url;
@@ -13,7 +12,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by sa on 03.09.17.
@@ -22,49 +20,26 @@ import java.util.Set;
 @SessionScoped
 public class MailServerJsfController extends MainJsfController<MailServer> {
 
-    private MailServer mailServer;
-    private MailServer selectedMailServer;
     private List<Protocol> protocolList;
 
     @ManagedProperty("#{securityService}")
     private SecurityServiceImpl securityService;
 
     @ManagedProperty("#{mailServerService}")
-    IService service;
+    private IService<MailServer> entityService;
 
     @PostConstruct
     public void init() {
-        mailServer = new MailServer();
-        protocolList=Arrays.asList(Protocol.values());
-    }
-
-    public Set<MailServer> mailServerSet() {
-        return service.findAllByOwner();
-
- }
-    public void edit() {
-        mailServer = selectedMailServer;
-        Url.redirect(Url.MAIL_SERVER_EDIT_URL);
-    }
-
-    public void save() {
-        if (mailServer.getId() == null) {
-            mailServer.setOwner(securityService.getRegisteredUser());
-            service.add(mailServer);
-        } else {
-            service.update(mailServer);
-        }
-        mailServer = new MailServer();
-        Url.redirect(Url.MAIL_SERVER_LIST_URL);
-
-    }
-
-    public void create(){
-        init();
-        Url.redirect(Url.MAIL_SERVER_EDIT_URL);
+        super.init();
+        protocolList = Arrays.asList(Protocol.values());
     }
 
     @Override
+    MailServer newInstance() {
+        return new MailServer();
+    }
+
+   @Override
     public String getUrlEdit() {
         return Url.MAIL_SERVER_EDIT_URL;
     }
@@ -72,22 +47,6 @@ public class MailServerJsfController extends MainJsfController<MailServer> {
     @Override
     public String getUrlList() {
         return Url.MAIL_ADDRESS_LIST_URL;
-    }
-
-    public MailServer getMailServer() {
-        return mailServer;
-    }
-
-    public void setMailServer(MailServer mailServer) {
-        this.mailServer = mailServer;
-    }
-
-    public MailServer getSelectedMailServer() {
-        return selectedMailServer;
-    }
-
-    public void setSelectedMailServer(MailServer selectedMailServer) {
-        this.selectedMailServer = selectedMailServer;
     }
 
     public SecurityServiceImpl getSecurityService() {
@@ -98,12 +57,12 @@ public class MailServerJsfController extends MainJsfController<MailServer> {
         this.securityService = securityService;
     }
 
-    public IService getService() {
-        return service;
+    public IService<MailServer> getEntityService() {
+        return entityService;
     }
 
-    public void setService(IService service) {
-        this.service = service;
+    public void setEntityService(IService<MailServer> entityService) {
+        this.entityService = entityService;
     }
 
     public List<Protocol> getProtocolList() {

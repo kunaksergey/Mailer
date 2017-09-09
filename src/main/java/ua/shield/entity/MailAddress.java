@@ -8,7 +8,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name="mail_address")
-public class MailAddress implements IOwnedId{
+public class MailAddress implements IOwned {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,11 +54,12 @@ public class MailAddress implements IOwnedId{
         this.emailAddress = emailAddress;
     }
 
-
+    @Override
     public User getOwner() {
         return owner;
     }
 
+    @Override
     public void setOwner(User owner) {
         this.owner = owner;
     }

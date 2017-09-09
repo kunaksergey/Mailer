@@ -2,8 +2,8 @@
 <!--
   Created by IntelliJ IDEA.
   User: superkostya
-  Date: 03.09.17
-  Time: 17:05
+  Date: 05.09.17
+  Time: 19:23
 -->
 <!DOCTYPE html
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -16,62 +16,54 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
-    <title>List Servers</title>
+    <title>Server List</title>
 </h:head>
 
+
 <h:body>
-    <ui:composition template = "/template/menu.xhtml">
-        <ui:define name="content">
-            <h:form id="form">
-                <p:commandButton value="New" id="new"  actionListener="#{mailServerJsfController.create}" styleClass="ui-priority-primary" />
-                <p:dataTable id="singleDT" var="server" value="#{mailServerJsfController.mailServerSet()}" selectionMode="single" selection="#{mailServerJsfController.selectedMailServer}" rowKey="#{server.id}">
-                    <f:facet name="header">
-                        Server List
-                    </f:facet>
+    <ui:composition template="/template/list.xhtml">
+        <ui:param name="title" value="Server List"/>
+        <ui:param name="entity" value="#{mailServerJsfController}"/>
 
-                    <p:column headerText="Title" >
-                        <h:outputText value="#{server.host}" />
-                    </p:column>
-                </p:dataTable>
+        <ui:define name="dataTable">
+            <p:dataTable id="singleDT" var="server" value="#{mailServerJsfController.entitySet()}"
+                         selectionMode="single" selection="#{mailServerJsfController.selectedEntity}"
+                         rowKey="#{server.id}">
+                <f:facet name="header">
+                    Server List
+                </f:facet>
+                <p:column headerText="Title">
+                    <h:outputText value="#{server.host}"/>
+                </p:column>
+            </p:dataTable>
+        </ui:define>
 
-                <p:contextMenu for="singleDT">
-                    <p:menuitem value="View" update="serverDetail" icon="ui-icon-search" oncomplete="PF('serverDialog').show()"/>
-                    <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{mailServerJsfController.edit()}"/>
-                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{mailServerJsfController.delete()}">
-                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
-                    </p:menuitem>
-                </p:contextMenu>
+        <ui:define name="dialog">
+            <p:dialog header="Server Info" widgetVar="entityDialog" modal="true" showEffect="fade" hideEffect="fade"
+                      resizable="false">
+                <p:outputPanel id="entityDetail" style="text-align:center;">
+                    <p:panelGrid columns="2" rendered="#{not empty mailServerJsfController.selectedEntity}"
+                                 columnClasses="label,value">
+                        <h:outputText value="Host:"/>
+                        <h:outputText value="#{mailServerJsfController.selectedEntity.host}"/>
 
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                </p:confirmDialog>
+                        <h:outputText value="Port"/>
+                        <h:outputText value="#{mailServerJsfController.selectedEntity.port}"/>
 
-                <p:dialog header="Server Info" widgetVar="serverDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                    <p:outputPanel id="serverDetail" style="text-align:center;">
-                        <p:panelGrid  columns="2" rendered="#{not empty mailServerJsfController.selectedMailServer}" columnClasses="label,value">
-                            <h:outputText value="Host:" />
-                            <h:outputText value="#{mailServerJsfController.selectedMailServer.host}" />
+                        <h:outputText value="Protocol"/>
+                        <h:outputText value="#{mailServerJsfController.selectedEntity.protocol}"/>
 
-                            <h:outputText value="Port" />
-                            <h:outputText value="#{mailServerJsfController.selectedMailServer.port}" />
+                        <h:outputText value="Sender"/>
+                        <h:outputText value="#{mailServerJsfController.selectedEntity.sender}"/>
 
-                            <h:outputText value="Protocol" />
-                            <h:outputText value="#{mailServerJsfController.selectedMailServer.protocol}" />
+                        <h:outputText value="User"/>
+                        <h:outputText value="#{mailServerJsfController.selectedEntity.username}"/>
 
-                            <h:outputText value="Sender" />
-                            <h:outputText value="#{mailServerJsfController.selectedMailServer.sender}" />
-
-                            <h:outputText value="User" />
-                            <h:outputText value="#{mailServerJsfController.selectedMailServer.username}" />
-
-                            <h:outputText value="Smtp auth" />
-                            <h:outputText value="#{mailServerJsfController.selectedMailServer.smtpAuth}" />
-                        </p:panelGrid>
-                    </p:outputPanel>
-                </p:dialog>
-
-            </h:form>
+                        <h:outputText value="Smtp auth"/>
+                        <h:outputText value="#{mailServerJsfController.selectedEntity.smtpAuth}"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
         </ui:define>
     </ui:composition>
 </h:body>

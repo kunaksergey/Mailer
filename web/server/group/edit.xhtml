@@ -20,10 +20,11 @@
 
 <h:body>
     <h:form>
+        <p:growl id="growl" showDetail="true" sticky="true" />
         <p:panelGrid columns="1" cellpadding="3">
             <h:panelGroup>
                 <p:outputLabel for="group" value="Server group:"/>
-                <p:inputText id="group" value="#{groupMailServerJsfController.gropMailServer.title}"
+                <p:inputText id="group" value="#{groupMailServerJsfController.entity.title}"
                              required="true"/>
             </h:panelGroup>
 
@@ -37,10 +38,10 @@
                     <f:facet name="sourceCaption">Available</f:facet>
                     <f:facet name="targetCaption">Starting</f:facet>
 
-                    <p:ajax event="transfer" listener="#{groupMailServerJsfController.onTransfer}"/>
-                    <p:ajax event="select" listener="#{groupMailServerJsfController.onSelect}"/>
-                    <p:ajax event="unselect" listener="#{groupMailServerJsfController.onUnselect}"/>
-                    <p:ajax event="reorder" listener="#{groupMailServerJsfController.onReorder}"/>
+                    <p:ajax event="transfer" listener="#{groupMailServerJsfController.onTransfer}" update="growl"/>
+                    <p:ajax event="select" listener="#{groupMailServerJsfController.onSelect}" update="growl"/>
+                    <p:ajax event="unselect" listener="#{groupMailServerJsfController.onUnselect}" update="growl"/>
+                    <p:ajax event="reorder" listener="#{groupMailServerJsfController.onReorder}" update="growl"/>
 
                     <p:column style="width:10%">
                         <h:outputText styleClass="ui-theme ui-theme-#{server.host}"/>

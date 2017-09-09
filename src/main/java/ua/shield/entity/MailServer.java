@@ -10,7 +10,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name="mail_server")
-public class MailServer implements IOwnedId{
+public class MailServer implements IOwned {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,10 +77,12 @@ public class MailServer implements IOwnedId{
         this.id = id;
     }
 
+    @Override
     public User getOwner() {
         return owner;
     }
 
+    @Override
     public void setOwner(User owner) {
         this.owner = owner;
     }

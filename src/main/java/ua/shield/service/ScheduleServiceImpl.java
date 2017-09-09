@@ -1,11 +1,7 @@
 package ua.shield.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ua.shield.entity.Message;
-import ua.shield.entity.Role;
 import ua.shield.entity.Schedule;
-import ua.shield.entity.User;
-import ua.shield.service.repository.RoleRepository;
 import ua.shield.service.repository.ScheduleRepository;
 
 import java.util.Set;

@@ -20,50 +20,40 @@
 </h:head>
 
 <h:body>
-    <ui:composition template = "/template/menu.xhtml">
-        <ui:define name="content">
-            <h:form id="form">
-                <p:commandButton value="New" id="new"  actionListener="#{messageJsfController.create}" styleClass="ui-priority-primary" />
-                <p:dataTable id="singleDT" var="message" value="#{messageJsfController.mailAddressSet()}" selectionMode="single" selection="#{messageJsfController.selectedMessage}" rowKey="#{message.id}"
-                             paginator="true"
-                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                             rowsPerPageTemplate="5,10,15">
-                    <f:facet name="header">
-                        Message List
-                    </f:facet>
+    <ui:composition template = "/template/list.xhtml">
+        <ui:param name="title" value="Message List"/>
+        <ui:param name="entity" value="#{messageJsfController}"/>
 
-                    <p:column headerText="Title" >
-                        <h:outputText value="#{message.title}" />
-                    </p:column>
-                 </p:dataTable>
+        <ui:define name="dataTable">
+            <p:dataTable id="singleDT" var="message" value="#{messageJsfController.entitySet()}"  selection="#{messageJsfController.selectedEntity}" selectionMode="single" rowKey="#{message.id}"
+                         rows="10"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                <f:facet name="header">
+                    Message List
+                </f:facet>
 
-                <p:contextMenu for="singleDT">
-                    <p:menuitem value="View" update="messageDetail" icon="ui-icon-search" oncomplete="PF('messageDialog').show()"/>
-                    <p:menuitem value="Edit" icon="ui-icon-close" actionListener="#{messageJsfController.edit()}"/>
-                    <p:menuitem value="Delete" icon="ui-icon-delete" actionListener="#{messageJsfController.delete()}">
-                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
-                    </p:menuitem>
-                </p:contextMenu>
-
-                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                </p:confirmDialog>
-
-                <p:dialog header="Message Info" widgetVar="messageDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                    <p:outputPanel id="messageDetail" style="text-align:center;">
-                        <p:panelGrid  columns="2" rendered="#{not empty messageJsfController.selectedMessage}" columnClasses="label,value">
-                            <h:outputText value="Title:" />
-                            <h:outputText value="#{messageJsfController.selectedMessage.title}" />
-
-                            <h:outputText value="Year" />
-                            <h:outputText value="#{messageJsfController.selectedMessage.text}" />
-                        </p:panelGrid>
-                    </p:outputPanel>
-                </p:dialog>
-
-            </h:form>
+                <p:column headerText="Title" >
+                    <h:outputText value="#{message.title}" />
+                </p:column>
+            </p:dataTable>
         </ui:define>
+
+        <ui:define name="dialog">
+            <p:dialog header="Message Info" widgetVar="entityDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="entityDetail" style="text-align:center;">
+                    <p:panelGrid columns="2" rendered="#{not empty messageJsfController.selectedEntity}" columnClasses="label,value">
+                        <h:outputText value="Title:" />
+                        <h:outputText value="#{messageJsfController.selectedEntity.title}" />
+
+                        <h:outputText value="Year" />
+                        <h:outputText value="#{messageJsfController.selectedEntity.text}" />
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </ui:define>
+
     </ui:composition>
 </h:body>
 

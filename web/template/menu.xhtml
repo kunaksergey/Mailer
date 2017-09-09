@@ -16,7 +16,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
-    <title>Title</title>
+    <title>#{title}</title>
 </h:head>
 
 <h:body>
@@ -36,7 +36,7 @@
                 <p:menuitem value="List messages" url="/message/list.xhtml" icon="ui-icon-arrowreturnthick-1-e" />
             </p:submenu>
 
-            <p:submenu label="MailBox" icon="ui-icon-pencil">
+            <p:submenu label="E-mail" icon="ui-icon-pencil">
                 <p:menuitem value="New"  icon="ui-icon-arrowreturnthick-1-w" actionListener="#{mailAddressJsfController.create}"/>
                 <p:menuitem value="List" url="/email/list.xhtml" icon="ui-icon-arrowreturnthick-1-e" />
                 <p:submenu label="Group mail" icon="ui-icon-contact">
@@ -64,9 +64,8 @@
     </h:form>
 
     <div class="content">
-        <ui:insert name="content">
-
-        </ui:insert>
+     <ui:insert name="content">
+     </ui:insert>
     </div>
 
 </h:body>

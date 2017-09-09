@@ -1,6 +1,7 @@
 package ua.shield.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name="group_mail_address")
-public class GroupMailAddress implements IOwnedId{
+public class GroupMailAddress implements IOwnedDetail<MailAddress>,Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,10 +57,12 @@ public class GroupMailAddress implements IOwnedId{
         this.mailAddressSet = mailAddressSet;
     }
 
+    @Override
     public User getOwner() {
         return owner;
     }
 
+    @Override
     public void setOwner(User owner) {
         this.owner = owner;
     }
@@ -83,5 +86,15 @@ public class GroupMailAddress implements IOwnedId{
     @Override
     public String toString() {
         return title;
+    }
+
+    @Override
+    public Set<MailAddress> getDetailSet() {
+        return mailAddressSet;
+    }
+
+    @Override
+    public void setDetailSet(Set<MailAddress> detailSet) {
+        this.mailAddressSet=detailSet;
     }
 }
