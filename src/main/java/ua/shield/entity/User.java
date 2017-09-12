@@ -19,28 +19,33 @@ public class User {
     @Column(name="ID")
     private int id;
 
+
     //группы почтовых ящиков для рассылки
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL)
     private List<GroupMailAddress> groupsMailAdress;
 
     //группы серверов для рассылки
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL)
     private List<GroupMailServer> groupsMailServer;
 
     //список адрессов пользователя
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL)
     private List<MailAddress> mailAddresses;
 
     //список серверов пользователя
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL)
     private List<MailServer> mailServers;
 
     //задания
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL)
     private List<Task> tasks;
 
+    //события
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL)
+    private List<ExtScheduleEvent> events;
+
     //сообщения
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL)
     private List<Message> messages;
 
     //логин
@@ -118,6 +123,69 @@ public class User {
         this.roles = roles;
     }
 
+    public List<GroupMailAddress> getGroupsMailAdress() {
+        return groupsMailAdress;
+    }
+
+    public void setGroupsMailAdress(List<GroupMailAddress> groupsMailAdress) {
+        this.groupsMailAdress = groupsMailAdress;
+    }
+
+    public List<GroupMailServer> getGroupsMailServer() {
+        return groupsMailServer;
+    }
+
+    public void setGroupsMailServer(List<GroupMailServer> groupsMailServer) {
+        this.groupsMailServer = groupsMailServer;
+    }
+
+    public List<MailAddress> getMailAddresses() {
+        return mailAddresses;
+    }
+
+    public void setMailAddresses(List<MailAddress> mailAddresses) {
+        this.mailAddresses = mailAddresses;
+    }
+
+    public List<MailServer> getMailServers() {
+        return mailServers;
+    }
+
+    public void setMailServers(List<MailServer> mailServers) {
+        this.mailServers = mailServers;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public List<ExtScheduleEvent> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<ExtScheduleEvent> events) {
+        this.events = events;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -2,14 +2,18 @@ package ua.shield.entity;
 
 import org.primefaces.model.*;
 import ua.shield.enumer.DateStrategy;
+import ua.shield.helper.ConverterDateAndLocalDateTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
  * Created by sa on 05.09.17.
  */
+@Entity
+@Table(name="schedule_event")
 public class ExtScheduleEvent implements ScheduleEvent, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,15 +23,20 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
     @Column(name="Title")
     private String title;
 
+    @Column(name="createDate")
+    private LocalDateTime createDate;
+
     @Column(name="startDate")
-    private Date startDate;
+    private LocalDateTime startDate;
 
     @Column(name="endDate")
-    private Date endDate;
+    private LocalDateTime endDate;
 
     @Column(name="nextRunDate")
     private Date nextRunDate; //слудующий запуск
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "TASK_ID")
     private Task task;
 
     @Column(name="dateStrategy")
@@ -46,27 +55,41 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
     @Column(name="description")
     private String description;
 
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "USER_ID")
+    private User owner;
+
+    @Column(name="count")
+    private int count;
+
     public ExtScheduleEvent() {
     }
 
-    public ExtScheduleEvent(String title, Date startDate, Date endDate) {
+    public ExtScheduleEvent(String title, LocalDateTime startDate, LocalDateTime endDate) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
+    public ExtScheduleEvent(String title, Date startDate, Date endDate) {
+        this.title = title;
+        this.startDate = ConverterDateAndLocalDateTime.DateToLocalDateTime(startDate);
+        this.endDate = ConverterDateAndLocalDateTime.DateToLocalDateTime(endDate);
+    }
+
+
     @Override
     public String getId() {
-        return ""+id;
+        return (id==null)?null:id.toString();
     }
 
     @Override
     public void setId(String id) {
-        this.id = Integer.valueOf(id);
+        this.id=Integer.valueOf(id);
     }
 
-
-     public void setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -81,20 +104,20 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
 
     @Override
     public Date getStartDate() {
-        return startDate;
+        return (startDate==null)?null:ConverterDateAndLocalDateTime.LocalDateTimeToDate(startDate);
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = ConverterDateAndLocalDateTime.DateToLocalDateTime(startDate);
     }
 
     @Override
     public Date getEndDate() {
-        return endDate;
+        return (endDate==null)?null:ConverterDateAndLocalDateTime.LocalDateTimeToDate(endDate);
     }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        this.endDate = ConverterDateAndLocalDateTime.DateToLocalDateTime(endDate);
     }
 
     public Date getNextRunDate() {
@@ -151,8 +174,24 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
         return description;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     @Override
@@ -177,5 +216,25 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
     public String getStyleClass() {
         //do nothing
         return null;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ExtScheduleEvent that = (ExtScheduleEvent) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        return title != null ? title.equals(that.title) : that.title == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        return result;
     }
 }

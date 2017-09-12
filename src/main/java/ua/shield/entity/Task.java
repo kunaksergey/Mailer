@@ -5,6 +5,7 @@ import ua.shield.enumer.TaskStatus;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by sa on 01.09.17.
@@ -22,33 +23,16 @@ public class Task implements IOwned,Serializable {
     @Column(name="title")
     private String title;
 
-    // рассписание задания
-    @Transient
-    private Schedule schedule;
-
     //сообщение
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MESSAGE_ID")
     private Message message;
 
-    //количество запусков
-    //@Column(name="count")
-    @Transient
-    private int count;
-
-    //статус задания 0-подготовлено,1-в работе, 2-закончено
+   //статус задания 0-подготовлено,1-в работе, 2-закончено
     //@Column(name="status")
     //@Enumerated(EnumType.ORDINAL)
     @Transient
     TaskStatus status;
-
-    //старт задания
-    @Transient
-    private LocalDateTime startTime;
-
-    //последний запуск
-    @Transient
-    private LocalDateTime lastInvokeTime;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "USER_ID")
@@ -63,10 +47,9 @@ public class Task implements IOwned,Serializable {
     @JoinColumn(name = "GROUP_SERVER_ID")
     private GroupMailServer groupMailServer;
 
-    //следующий запуск задания
-    @Transient
-    private LocalDateTime nextStartTime;
-
+    //события
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "task",cascade=CascadeType.ALL,orphanRemoval = true)
+    private List<ExtScheduleEvent> events;
 
     public Task() {
     }
@@ -85,14 +68,6 @@ public class Task implements IOwned,Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -101,28 +76,12 @@ public class Task implements IOwned,Serializable {
         this.title = title;
     }
 
-    public Schedule getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
-    }
-
     public Message getMessage() {
         return message;
     }
 
     public void setMessage(Message message) {
         this.message = message;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
     }
 
     public TaskStatus getStatus() {
@@ -157,6 +116,14 @@ public class Task implements IOwned,Serializable {
 
     public void setGroupMailServer(GroupMailServer groupMailServer) {
         this.groupMailServer = groupMailServer;
+    }
+
+    public List<ExtScheduleEvent> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<ExtScheduleEvent> events) {
+        this.events = events;
     }
 
     @Override

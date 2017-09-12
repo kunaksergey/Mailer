@@ -30,16 +30,16 @@
                     <h3 style="margin-top: 0">Editable Schedule</h3>
                     <p:schedule id="schedule" value="#{scheduleView.eventModel}" widgetVar="myschedule"
                                 timeZone="GMT+2">
-
                         <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" update="eventDetails"
                                 oncomplete="PF('eventDialog').show();"/>
                         <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails"
                                 oncomplete="PF('eventDialog').show();"/>
                         <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="messagesEvent"/>
                         <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="messagesEvent"/>
-
                     </p:schedule>
                 </h:panelGrid>
+
+
 
 
                 <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
@@ -107,13 +107,25 @@
                         </p:outputPanel>
                     </p:panelGrid>
 
-                    <p:commandButton type="reset" value="Reset"/>
                     <p:commandButton id="addButton" value="Save" actionListener="#{scheduleView.addEvent}"
                                      oncomplete="PF('myschedule').update();PF('eventDialog').hide();"
                                      update="messagesEvent"/>
 
+                    <p:commandButton id="deleteButton" value="Delete" actionListener="#{scheduleView.deleteEvent}"
+                                     oncomplete="PF('myschedule').update();PF('eventDialog').hide();"
+                                     update="messagesEvent"  rendered="#{scheduleView.event.id == null}">
+                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert"/>
+                    </p:commandButton>
 
                 </p:dialog>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"
+                                     icon="ui-icon-check"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no"
+                                     icon="ui-icon-close"/>
+                </p:confirmDialog>
+
             </h:form>
 
 

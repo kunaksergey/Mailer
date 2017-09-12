@@ -1,10 +1,8 @@
 package ua.shield.jsf;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleModel;
 import ua.shield.entity.ExtScheduleEvent;
 import ua.shield.entity.Task;
@@ -13,7 +11,10 @@ import ua.shield.exeption.WrongFillDateException;
 import ua.shield.helper.FrontMessage;
 import ua.shield.helper.calcDate.*;
 import ua.shield.jsf.controller.TaskJsfController;
+import ua.shield.jsf.model.ExtDefaultScheduleModel;
+import ua.shield.jsf.model.IScheduleModel;
 import ua.shield.service.IService;
+import ua.shield.service.SecurityServiceImpl;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -35,9 +36,14 @@ import java.util.*;
 @ManagedBean
 @ViewScoped
 public class ScheduleView implements Serializable {
-    private ScheduleModel eventModel;
+    //model schedule for frontend
+    private IScheduleModel eventModel;
+
+    //entity event for saving to databas
     private ExtScheduleEvent event;
-    private IRunDateStategy runDateStategy;
+
+    //strategy of shedule
+    private IRunDateStategy runDateStrategy;
     private Set<Task> tasks;
     private Map<DateStrategy,IRunDateStategy> dateStategyMap;
 
@@ -45,16 +51,19 @@ public class ScheduleView implements Serializable {
     private TaskJsfController taskJsfController;
 
     @ManagedProperty("#{taskService}")
-    private IService<Task> service;
+    private IService<Task> taskService;
+
+    @ManagedProperty("#{eventService}")
+    private IService<ExtScheduleEvent> eventService;
+
+    @ManagedProperty("#{securityService}")
+    private SecurityServiceImpl securityService;
 
     @PostConstruct
     public void init() {
-        event = new ExtScheduleEvent();
-        eventModel = new DefaultScheduleModel();
-        eventModel.addEvent(new ExtScheduleEvent("Champions League Match", previousDay8Pm(), previousDay11Pm()));
-        eventModel.addEvent(new ExtScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
-        eventModel.addEvent(new ExtScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
-        eventModel.addEvent(new ExtScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
+      event = new ExtScheduleEvent();
+        eventModel = new ExtDefaultScheduleModel();
+        eventModel.addAllEvent(new ArrayList<>(eventService.findAllByOwner()));
 
         dateStategyMap=new HashMap<>();
         dateStategyMap.put(DateStrategy.ONCE,new OnceRunDateStategy());
@@ -62,7 +71,7 @@ public class ScheduleView implements Serializable {
         dateStategyMap.put(DateStrategy.EVERYDAY,new EveryDayRunDateStategy());
         dateStategyMap.put(DateStrategy.EVERYWEEK,new EveryWeekRunDateStategy());
         dateStategyMap.put(DateStrategy.SPECIALPERIOD,new SpecialPeriodRunDateStategy());
-        tasks=service.findAllByOwner();
+        tasks=taskService.findAllByOwner();
     }
 
     public Date getRandomDate(Date base) {
@@ -186,28 +195,52 @@ public class ScheduleView implements Serializable {
         this.tasks = tasks;
     }
 
-    public IService<Task> getService() {
-        return service;
+    public IService<Task> getTaskService() {
+        return taskService;
     }
 
-    public void setService(IService<Task> service) {
-        this.service = service;
+    public void setTaskService(IService<Task> taskService) {
+        this.taskService = taskService;
     }
 
+    public void setEventModel(IScheduleModel eventModel) {
+        this.eventModel = eventModel;
+    }
 
+    public IService<ExtScheduleEvent> getEventService() {
+        return eventService;
+    }
+
+    public void setEventService(IService<ExtScheduleEvent> eventService) {
+        this.eventService = eventService;
+    }
 
     public void addEvent(ActionEvent actionEvent) {
         try {
             checkFillDate(event);
             calcNextRunDate(event);
-            if (event.getId() == null)
-                eventModel.addEvent(event);
-            else
-                eventModel.updateEvent(event);
+            if (event.getId() == null){
+                //eventModel.addEvent(event);
+            event.setOwner(securityService.getRegisteredUser());
+            eventService.add(event);}
+
+            else {
+                //eventModel.updateEvent(event);
+                eventService.update(event);
+            }
         } catch (WrongFillDateException e) {
             FrontMessage.addMessage(e.getMessage());
         }
+        init();
    }
+
+    public void deleteEvent(ActionEvent actionEvent) {
+        System.out.println("Delete");
+      //  init();
+    }
+
+
+
 
     //проверяем коррекстность заполнения дат
     private void checkFillDate(ExtScheduleEvent event) throws WrongFillDateException {
@@ -269,6 +302,8 @@ public class ScheduleView implements Serializable {
         event = new ExtScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
     }
 
+
+
     public void onEventMove(ScheduleEntryMoveEvent event) {
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
 
@@ -286,11 +321,19 @@ public class ScheduleView implements Serializable {
     }
 
 
-    public IRunDateStategy getRunDateStategy() {
-        return runDateStategy;
+    public IRunDateStategy getRunDateStrategy() {
+        return runDateStrategy;
     }
 
-    public void setRunDateStategy(IRunDateStategy runDateStategy) {
-        this.runDateStategy = runDateStategy;
+    public void setRunDateStrategy(IRunDateStategy runDateStrategy) {
+        this.runDateStrategy = runDateStrategy;
+    }
+
+    public SecurityServiceImpl getSecurityService() {
+        return securityService;
+    }
+
+    public void setSecurityService(SecurityServiceImpl securityService) {
+        this.securityService = securityService;
     }
 }

@@ -1,8 +1,8 @@
 package ua.shield.helper.calcDate;
 
-import java.time.Instant;
+import ua.shield.helper.ConverterDateAndLocalDateTime;
+
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -19,11 +19,10 @@ abstract public class RunDayStategy implements IRunDateStategy {
     }
 
     public Date nextRunDate(Date date) {
-        LocalDateTime ldtDate = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        LocalDateTime ldtDate = ConverterDateAndLocalDateTime.DateToLocalDateTime(date);
         ldtDate.plusHours(hours);
         ldtDate.plusDays(days);
-        Instant instant = ldtDate.atZone(ZoneId.systemDefault()).toInstant();
-        return Date.from(instant);
+        return ConverterDateAndLocalDateTime.LocalDateTimeToDate(ldtDate);
     }
 
     public int getHours() {
