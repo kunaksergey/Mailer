@@ -23,7 +23,7 @@ public class EventServiceImpl implements EventService{
 
     @Override
     public ExtScheduleEvent findById(int id) {
-        return null;
+        return eventRepository.findOne(id);
     }
 
     @Override

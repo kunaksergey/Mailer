@@ -32,6 +32,10 @@ public class MailAddress implements IOwned {
     public MailAddress() {
     }
 
+    public MailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
     public MailAddress(String emailAddress, User owner) {
         this.emailAddress = emailAddress;
         this.owner = owner;

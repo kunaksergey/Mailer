@@ -44,6 +44,9 @@
             <p:outputLabel for="smtpAuth" value="Smtp Auth:" />
             <p:inputSwitch  id="smtpAuth" value="#{mailServerJsfController.entity.smtpAuth}"/>
 
+            <p:outputLabel for="startTls" value="Start with Tls:" />
+            <p:inputSwitch  id="startTls" value="#{mailServerJsfController.entity.startTls}"/>
+
             <p:commandButton value="Submit" action="#{mailServerJsfController.save()}"/>
             <p:commandButton value="Reset" type="reset"/>
         </h:panelGrid>

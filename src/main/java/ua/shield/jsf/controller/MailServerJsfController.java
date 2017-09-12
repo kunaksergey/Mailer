@@ -46,7 +46,7 @@ public class MailServerJsfController extends MainJsfController<MailServer> {
 
     @Override
     public String getUrlList() {
-        return Url.MAIL_ADDRESS_LIST_URL;
+        return Url.MAIL_SERVER_LIST_URL;
     }
 
     public SecurityServiceImpl getSecurityService() {

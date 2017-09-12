@@ -50,4 +50,12 @@
 
     <jpa:repositories base-package="ua.shield" entity-manager-factory-ref="emf"
                       transaction-manager-ref="transactionМanager"/>
+
+    <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" id="taskExecutor">
+        <property name="corePoolSize" value="5"></property>
+        <property name="maxPoolSize" value="10"></property>
+        <property name="queueCapacity" value="40"></property>
+        <property name="waitForTasksToCompleteOnShutdown" value="true"></property>
+    </bean>
+
 </beans>

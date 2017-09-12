@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by sa on 05.09.17.
@@ -59,6 +60,9 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "USER_ID")
     private User owner;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "event",cascade=CascadeType.ALL)
+    private List<Log> logList;
 
     @Column(name="count")
     private int count;
@@ -218,6 +222,13 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
         return null;
     }
 
+    public List<Log> getLogList() {
+        return logList;
+    }
+
+    public void setLogList(List<Log> logList) {
+        this.logList = logList;
+    }
 
     @Override
     public boolean equals(Object o) {

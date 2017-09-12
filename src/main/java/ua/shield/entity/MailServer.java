@@ -55,6 +55,9 @@ public class MailServer implements IOwned {
     @Column(name="smtpAuth")
     private boolean smtpAuth;
 
+    @Column(name="startTls")
+    private boolean startTls;
+
     public MailServer() {
     }
 
@@ -137,6 +140,14 @@ public class MailServer implements IOwned {
 
     public boolean isSmtpAuth() {
         return smtpAuth;
+    }
+
+    public boolean isStartTls() {
+        return startTls;
+    }
+
+    public void setStartTls(boolean startTls) {
+        this.startTls = startTls;
     }
 
     public void setSmtpAuth(boolean smtpAuth) {
