@@ -1,6 +1,7 @@
 package ua.shield.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ua.shield.entity.Log;
 import ua.shield.service.repository.LogRespository;
 
@@ -9,6 +10,7 @@ import java.util.Set;
 /**
  * Created by sa on 12.09.17.
  */
+@Service("logService")
 public class LogServiceImpl implements LogService {
     @Autowired
     LogRespository logRespository;

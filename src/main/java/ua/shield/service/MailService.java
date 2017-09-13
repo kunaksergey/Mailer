@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import ua.shield.entity.ExtScheduleEvent;
+import ua.shield.entity.Log;
 import ua.shield.entity.MailServer;
 import ua.shield.entity.Task;
 import ua.shield.jsf.validator.EmailValidator;
@@ -34,9 +35,11 @@ public class MailService {
 
 
     //Send Event
-    public Future<String> sendEvent(ExtScheduleEvent event) {
+    public Future<Log> sendEvent(ExtScheduleEvent event) {
         Task task = event.getTask();
         String text = task.getMessage().getText(); //take our text
+        Log log = new Log();
+        log.setEvent(event);
         String[] emailAddress = task.getGroupMailAddress().getMailAddressSet().stream()
                 .filter(e ->
                         e.getEmailAddress().matches(EmailValidator.EMAIL_PATTERN)
@@ -47,26 +50,27 @@ public class MailService {
                 .toArray(String[]::new);
         Set<MailServer> mailServerSet = task.getGroupMailServer().getMailServerSet();
 
-        return sendMail(text, emailAddress, new ArrayList<>(mailServerSet));
+        return sendMail(log, text, emailAddress, new ArrayList<>(mailServerSet));
     }
 
-    public Future<String> sendMail(final String text, final String[] to, final List<MailServer> mailServerList) {
+    public Future<Log> sendMail(final Log log, final String text, final String[] to, final List<MailServer> mailServerList) {
         return taskExecutor.submit(() -> {
-            String log = "";
+            String str = "";
             int indexServer = 0;
             try {
                 sendMailSimple(text, mailServerList.get(indexServer).getSender(), to, mailServerList.get(indexServer));
-                log = "Mail was sent successfully over: " + mailServerList.get(indexServer).getHost();
+                str = "Mail was sent successfully over: " + mailServerList.get(indexServer).getHost();
             } catch (MessagingException e) {
-                log = "Error create message";
+                str = "Error create message";
             } catch (MailException e) {
                 indexServer++;
                 if (mailServerList.size() - 1 <= indexServer) {
                     sendMailSimple(text, mailServerList.get(indexServer).getSender(), to, mailServerList.get(indexServer));
                 } else {
-                    log = "Failed to send emails;";
+                    str = "Failed to send emails;";
                 }
             }
+            log.setLog(str);
             return log;
         });
 

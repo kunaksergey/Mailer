@@ -1,11 +1,12 @@
 package ua.shield.entity;
 
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * Created by sa on 12.09.17.
  */
+@Entity
+@Table(name = "log")
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +17,7 @@ public class Log {
     @JoinColumn(name = "EVENT_ID")
     private ExtScheduleEvent event;
 
+    @Column(name = "log")
     private String log;
 
     public Integer getId() {

@@ -1,6 +1,6 @@
 package ua.shield.entity;
 
-import org.primefaces.model.*;
+import org.primefaces.model.ScheduleEvent;
 import ua.shield.enumer.DateStrategy;
 import ua.shield.helper.ConverterDateAndLocalDateTime;
 
@@ -34,7 +34,7 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
     private LocalDateTime endDate;
 
     @Column(name="nextRunDate")
-    private Date nextRunDate; //слудующий запуск
+    private LocalDateTime nextRunDate; //слудующий запуск
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "TASK_ID")
@@ -61,7 +61,7 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
     @JoinColumn(name = "USER_ID")
     private User owner;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "event",cascade=CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "event", cascade = CascadeType.ALL)
     private List<Log> logList;
 
     @Column(name="count")
@@ -125,11 +125,12 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
     }
 
     public Date getNextRunDate() {
-        return nextRunDate;
+        return (nextRunDate == null) ? null : ConverterDateAndLocalDateTime.LocalDateTimeToDate(nextRunDate);
     }
 
     public void setNextRunDate(Date nextRunDate) {
-        this.nextRunDate = nextRunDate;
+        this.nextRunDate = ConverterDateAndLocalDateTime.DateToLocalDateTime(nextRunDate);
+        ;
     }
 
     public Task getTask() {
@@ -247,5 +248,12 @@ public class ExtScheduleEvent implements ScheduleEvent, Serializable {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (title != null ? title.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ExtScheduleEvent{" +
+                "title='" + title + '\'' +
+                '}';
     }
 }

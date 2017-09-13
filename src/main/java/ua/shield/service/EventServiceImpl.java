@@ -6,7 +6,6 @@ import ua.shield.entity.ExtScheduleEvent;
 import ua.shield.service.repository.EventRepository;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -42,9 +41,8 @@ public class EventServiceImpl implements EventService{
     }
 
     @Override
-    public List<ExtScheduleEvent> findAllInTimeAndEditable() {
-       //return eventRepository.findAllInTimeAndEditable(LocalDateTime.now(),true);
-        return null;
+    public List<ExtScheduleEvent> findAllLessThanTimeAndEditable(LocalDateTime localDateTime, boolean editable) {
+        return eventRepository.findAllByNextRunDateLessThanEqualAndEditable(localDateTime, editable);
     }
 
     @Override
