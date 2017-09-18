@@ -20,6 +20,17 @@ public class Log {
     @Column(name = "log")
     private String log;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "USER_ID")
+    private User owner;
+
+    public Log() {
+    }
+
+    public Log(User owner) {
+        this.owner = owner;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -42,5 +53,13 @@ public class Log {
 
     public void setLog(String log) {
         this.log = log;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

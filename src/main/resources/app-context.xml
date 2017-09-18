@@ -3,6 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
@@ -10,10 +11,12 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/data/jpa
-       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <context:component-scan base-package="ua.shield"/>
-
+    <task:scheduler id="myScheduler" pool-size="10"/>
+    <task:executor id="threadMail" pool-size="10"/>
+    <task:annotation-driven executor="threadMail" scheduler="myScheduler" proxy-target-class="true"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -52,10 +55,10 @@
                       transaction-manager-ref="transactionМanager"/>
 
     <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" id="taskExecutor">
-        <property name="corePoolSize" value="5"></property>
-        <property name="maxPoolSize" value="10"></property>
-        <property name="queueCapacity" value="40"></property>
-        <property name="waitForTasksToCompleteOnShutdown" value="true"></property>
+        <property name="corePoolSize" value="5"/>
+        <property name="maxPoolSize" value="10"/>
+        <property name="queueCapacity" value="40"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="true"/>
     </bean>
 
 </beans>

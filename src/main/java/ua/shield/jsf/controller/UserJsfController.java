@@ -1,7 +1,6 @@
 package ua.shield.jsf.controller;
 
 import ua.shield.entity.User;
-import ua.shield.service.ScheduleService;
 import ua.shield.service.SecurityServiceImpl;
 import ua.shield.service.UserService;
 

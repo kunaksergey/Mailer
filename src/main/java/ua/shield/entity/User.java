@@ -48,6 +48,10 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner",cascade=CascadeType.ALL)
     private List<Message> messages;
 
+    //задания
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Log> logs;
+
     //логин
     @Column(name="login")
     private String login;

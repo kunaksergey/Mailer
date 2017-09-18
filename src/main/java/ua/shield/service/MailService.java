@@ -6,11 +6,10 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
-import ua.shield.entity.ExtScheduleEvent;
-import ua.shield.entity.Log;
-import ua.shield.entity.MailServer;
-import ua.shield.entity.Task;
+import ua.shield.entity.*;
 import ua.shield.jsf.validator.EmailValidator;
 
 import javax.mail.MessagingException;
@@ -35,59 +34,52 @@ public class MailService {
 
 
     //Send Event
+    @Async
     public Future<Log> sendEvent(ExtScheduleEvent event) {
-        Task task = event.getTask();
-        String text = task.getMessage().getText(); //take our text
-        Log log = new Log();
-        log.setEvent(event);
-        String[] emailAddress = task.getGroupMailAddress().getMailAddressSet().stream()
+        //take our text
+        Message message = event.getTask().getMessage();
+
+        String[] emailAddresses = event.getTask().getGroupMailAddress().getMailAddressSet().stream()
                 .filter(e ->
-                        e.getEmailAddress().matches(EmailValidator.EMAIL_PATTERN)
-                )
-                .map(e ->
-                        e.getEmailAddress()
-                )
+                        e.getEmailAddress().matches(EmailValidator.EMAIL_PATTERN))
+                .map(MailAddress::getEmailAddress)
                 .toArray(String[]::new);
-        Set<MailServer> mailServerSet = task.getGroupMailServer().getMailServerSet();
 
-        return sendMail(log, text, emailAddress, new ArrayList<>(mailServerSet));
+        Set<MailServer> mailServerSet = event.getTask().getGroupMailServer().getMailServerSet();
+
+        Log log = sendMail(new ArrayList<>(mailServerSet), emailAddresses, message);
+
+        log.setOwner(event.getOwner()); //set up owner of log
+        log.setEvent(event);//set up event of log
+        System.out.println("send in " + Thread.currentThread().getName());
+        return new AsyncResult<>(log);
     }
 
-    public Future<Log> sendMail(final Log log, final String text, final String[] to, final List<MailServer> mailServerList) {
-        return taskExecutor.submit(() -> {
-            String str = "";
-            int indexServer = 0;
+    private Log sendMail(final List<MailServer> mailServerList, final String[] to, final Message message) {
+
+        String strLog = "";
+        int indexServer = 0;
+        boolean successfull = false;
+        while (!successfull && (mailServerList.size() - 1 >= indexServer)) {
             try {
-                sendMailSimple(text, mailServerList.get(indexServer).getSender(), to, mailServerList.get(indexServer));
-                str = "Mail was sent successfully over: " + mailServerList.get(indexServer).getHost();
+                sendMailSimple(mailServerList.get(indexServer), mailServerList.get(indexServer).getSender(), to, message);
+                strLog += "Mail was sent successfully over: " + mailServerList.get(indexServer).getHost();
+                successfull = true;
             } catch (MessagingException e) {
-                str = "Error create message";
+                strLog += "Error create message";
             } catch (MailException e) {
+                strLog = "Failed to send emails over: " + mailServerList.get(indexServer).getHost();
                 indexServer++;
-                if (mailServerList.size() - 1 <= indexServer) {
-                    sendMailSimple(text, mailServerList.get(indexServer).getSender(), to, mailServerList.get(indexServer));
-                } else {
-                    str = "Failed to send emails;";
-                }
             }
-            log.setLog(str);
-            return log;
-        });
+        }
 
-//        taskExecutor.execute( new Callable<String>() {
-//            public void run() {
-//                try {
-//                    sendMailSimple(message.getText(), mailServer.getSender(), email.getEmailAddress(), mailServer);
-//                } catch (MailParseException e) {
-//                    e.printStackTrace();
-//                    log.error("Failed to send email to: " + to + " reason: "+e.getMessage());
-//                    throw new Exception(e);
-//                }
-//            }
-//        });
+        Log log = new Log();
+        log.setLog(strLog);
+
+        return log;
     }
 
-    private void sendMailSimple(String text, String from, String[] to, MailServer mailServer) throws MailException, MessagingException {
+    private void sendMailSimple(MailServer mailServer, String from, String[] to, Message message) throws MailException, MessagingException {
         JavaMailSender mailSender = getJavaMailSender(mailServer);
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -96,7 +88,9 @@ public class MailService {
         helper.setFrom(from);
         helper.setTo(to);
         // helper.setSubject(subject);
-        helper.setText(text);
+        helper.setSubject(message.getTitle());
+        helper.setText(message.getText());
+
 //            if(filePath != null){
 //                FileSystemResource file = new FileSystemResource(filePath);
 //                helper.addAttachment(file.getFilename(), file);
@@ -108,7 +102,7 @@ public class MailService {
     }
 
 
-    public JavaMailSenderImpl getJavaMailSender(MailServer mailServer) {
+    private JavaMailSenderImpl getJavaMailSender(MailServer mailServer) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(mailServer.getHost());
         mailSender.setPort(mailServer.getPort());

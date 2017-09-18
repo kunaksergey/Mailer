@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Created by sa on 08.09.17.
  */
-abstract public class RunDayStategy implements IRunDateStategy {
+public class RunDayStategy implements IRunDateStategy {
     private int hours;
     private int days;
 
@@ -20,8 +20,7 @@ abstract public class RunDayStategy implements IRunDateStategy {
 
     public Date nextRunDate(Date date) {
         LocalDateTime ldtDate = ConverterDateAndLocalDateTime.DateToLocalDateTime(date);
-        ldtDate.plusHours(hours);
-        ldtDate.plusDays(days);
+        ldtDate = ldtDate.plusHours(hours).plusDays(days);
         return ConverterDateAndLocalDateTime.LocalDateTimeToDate(ldtDate);
     }
 
